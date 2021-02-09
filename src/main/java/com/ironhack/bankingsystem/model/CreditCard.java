@@ -1,14 +1,13 @@
 package com.ironhack.bankingsystem.model;
 
-import com.ironhack.bankingsystem.enums.Status;
-
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Optional;
 
 @Entity
 public class CreditCard extends Account {
-
+    @Id
+    private Long creditCardId;
     private BigDecimal creditLimit;
     private Double interestRate;
 

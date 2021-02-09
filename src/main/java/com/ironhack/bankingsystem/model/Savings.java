@@ -11,7 +11,8 @@ import java.util.Optional;
 
 @Entity
 public class Savings extends Account {
-
+    @Id
+    private String savingsId;
     private String secretKey;
     private BigDecimal minimumBalance;
     private Double interestRate;

@@ -2,16 +2,14 @@ package com.ironhack.bankingsystem.model;
 
 import com.ironhack.bankingsystem.enums.Status;
 
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Optional;
 
 @Entity
 public class Checking extends Account {
-
+    @Id
+    private String checkingId;
     private String secretKey;
     private BigDecimal minimumBalance;
     private BigDecimal monthlyMaintenanceFee;
@@ -23,13 +21,12 @@ public class Checking extends Account {
     }
 
     public Checking(Long id, BigDecimal balance, AccountHolder primaryOwner, Optional<AccountHolder> secondaryOwner,
-                    BigDecimal penaltyFee, String secretKey, BigDecimal minimumBalance, BigDecimal monthlyMaintenanceFee,
-                    Status status) {
+                    BigDecimal penaltyFee, String secretKey, Status status) {
         super(id, balance, primaryOwner, secondaryOwner, penaltyFee);
-        this.secretKey = secretKey;
-        this.minimumBalance = minimumBalance;
-        this.monthlyMaintenanceFee = monthlyMaintenanceFee;
-        this.status = status;
+        setSecretKey(secretKey);
+        this.minimumBalance = new BigDecimal(250);
+        this.monthlyMaintenanceFee = new BigDecimal(12);
+        setStatus(status);
     }
 
     public BigDecimal getMinimumBalance() {
@@ -63,5 +60,15 @@ public class Checking extends Account {
 
     public void setSecretKey(String secretKey) {
         this.secretKey = secretKey;
+    }
+
+    public void setCheckingBalance(BigDecimal balance) {
+        if (balance.doubleValue() < getMinimumBalance().doubleValue()) {
+            System.err.println("The balance for a checking account can not be less than the minimum balance: 250." +
+                    "A penalty fee of 40 will be deducted from the current balance.");
+            super.setBalance(balance.subtract(BigDecimal.valueOf(40)));
+        } else {
+            super.setBalance(balance);
+        }
     }
 }

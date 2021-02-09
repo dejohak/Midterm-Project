@@ -1,6 +1,5 @@
 package com.ironhack.bankingsystem.model;
 
-import com.ironhack.bankingsystem.classes.User;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -8,19 +7,27 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
-public class ThirdParty extends User {
+public class ThirdParty {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String name;
     private String hashedKey;
 
-    public ThirdParty(String name) {
-        super(name);
+    public ThirdParty() {
     }
 
     public ThirdParty(String name, String hashedKey) {
-        super(name);
+        this.name = name;
         this.hashedKey = hashedKey;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Long getId() {

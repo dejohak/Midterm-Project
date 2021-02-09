@@ -1,32 +1,48 @@
 package com.ironhack.bankingsystem.model;
 
 import com.ironhack.bankingsystem.classes.Address;
-import com.ironhack.bankingsystem.classes.User;
 
 import javax.persistence.*;
 import java.util.Date;
 import java.util.Optional;
 
 @Entity
-public class AccountHolder extends User {
+public class AccountHolder {
+    @Id
+    private String id;
+    private String name;
     private Date birthDate;
     @Embedded
     private Address primaryAddress;
     @Embedded
     private Optional<Address> secondaryAddress;
 
-
-    public AccountHolder(String name) {
-        super(name);
+    public AccountHolder() {
     }
 
-    public AccountHolder(String name, Date birthDate, Address primaryAddress, Optional<Address> secondaryAddress) {
-        super(name);
+    public AccountHolder(String id, String name, Date birthDate, Address primaryAddress, Optional<Address> secondaryAddress) {
+        this.id = id;
+        this.name = name;
         this.birthDate = birthDate;
         this.primaryAddress = primaryAddress;
         this.secondaryAddress = secondaryAddress;
     }
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public Date getBirthDate() {
         return birthDate;
