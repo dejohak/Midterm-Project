@@ -16,17 +16,30 @@ public class Checking extends Account {
     @Enumerated(value = EnumType.STRING)
     private Status status;
 
-    public Checking(Long id, BigDecimal balance, AccountHolder primaryOwner, Optional<AccountHolder> secondaryOwner, BigDecimal penaltyFee) {
+    public Checking(Long id, BigDecimal balance, AccountHolder primaryOwner, Optional<AccountHolder> secondaryOwner
+            , BigDecimal penaltyFee) {
         super(id, balance, primaryOwner, secondaryOwner, penaltyFee);
-    }
-
-    public Checking(Long id, BigDecimal balance, AccountHolder primaryOwner, Optional<AccountHolder> secondaryOwner,
-                    BigDecimal penaltyFee, String secretKey, Status status) {
-        super(id, balance, primaryOwner, secondaryOwner, penaltyFee);
-        setSecretKey(secretKey);
         this.minimumBalance = new BigDecimal(250);
         this.monthlyMaintenanceFee = new BigDecimal(12);
+    }
+
+    public Checking(Long id, String checkingId, BigDecimal balance, AccountHolder primaryOwner,
+                    Optional<AccountHolder> secondaryOwner, BigDecimal penaltyFee, String secretKey,
+                    BigDecimal minimumBalance, BigDecimal monthlyMaintenanceFee, Status status) {
+        super(id, balance, primaryOwner, secondaryOwner, penaltyFee);
+        setCheckingId(checkingId);
+        setMinimumBalance(minimumBalance);
+        setMonthlyMaintenanceFee(monthlyMaintenanceFee);
+        setSecretKey(secretKey);
         setStatus(status);
+    }
+
+    public String getCheckingId() {
+        return checkingId;
+    }
+
+    public void setCheckingId(String checkingId) {
+        this.checkingId = checkingId;
     }
 
     public BigDecimal getMinimumBalance() {

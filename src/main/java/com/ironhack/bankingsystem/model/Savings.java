@@ -26,14 +26,23 @@ public class Savings extends Account {
         this.minimumBalance = new BigDecimal(1000);
     }
 
-    public Savings(Long id, BigDecimal balance, AccountHolder primaryOwner, Optional<AccountHolder> secondaryOwner,
+    public Savings(Long id, String savingsId, BigDecimal balance, AccountHolder primaryOwner, Optional<AccountHolder> secondaryOwner,
                    BigDecimal penaltyFee, String secretKey, BigDecimal minimumBalance, Double interestRate,
                    Status status) {
         super(id, balance, primaryOwner, secondaryOwner, penaltyFee);
+        setSavingsId(savingsId);
         setSecretKey(secretKey);
         setMinimumBalance(minimumBalance);
         setInterestRate(interestRate);
         setStatus(status);
+    }
+
+    public String getSavingsId() {
+        return savingsId;
+    }
+
+    public void setSavingsId(String savingsId) {
+        this.savingsId = savingsId;
     }
 
     public Double getInterestRate() {

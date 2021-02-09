@@ -18,11 +18,20 @@ public class CreditCard extends Account {
         this.interestRate = 0.2;
     }
 
-    public CreditCard(Long id, BigDecimal balance, AccountHolder primaryOwner, Optional<AccountHolder> secondaryOwner,
+    public CreditCard(Long id, Long creditCardId, BigDecimal balance, AccountHolder primaryOwner, Optional<AccountHolder> secondaryOwner,
                       BigDecimal penaltyFee, BigDecimal creditLimit, Double interestRate) {
         super(id, balance, primaryOwner, secondaryOwner, penaltyFee);
+        setCreditCardId(creditCardId);
         setInterestRate(interestRate);
         setCreditLimit(creditLimit);
+    }
+
+    public Long getCreditCardId() {
+        return creditCardId;
+    }
+
+    public void setCreditCardId(Long creditCardId) {
+        this.creditCardId = creditCardId;
     }
 
     public BigDecimal getCreditLimit() {
