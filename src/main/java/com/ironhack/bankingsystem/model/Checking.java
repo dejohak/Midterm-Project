@@ -4,29 +4,30 @@ import com.ironhack.bankingsystem.enums.Status;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.Optional;
 
 @Entity
-public class Checking extends Account {
+public class Checking {
     @Id
     private String checkingId;
+    private BigDecimal balance;
     private String secretKey;
     private BigDecimal minimumBalance;
     private BigDecimal monthlyMaintenanceFee;
     @Enumerated(value = EnumType.STRING)
     private Status status;
 
-    public Checking(Long id, BigDecimal balance, AccountHolder primaryOwner, Optional<AccountHolder> secondaryOwner
-            , BigDecimal penaltyFee) {
-        super(id, balance, primaryOwner, secondaryOwner, penaltyFee);
+    @ManyToOne
+    private Account account;
+
+
+    public Checking() {
         this.minimumBalance = new BigDecimal(250);
         this.monthlyMaintenanceFee = new BigDecimal(12);
     }
 
-    public Checking(Long id, String checkingId, BigDecimal balance, AccountHolder primaryOwner,
-                    Optional<AccountHolder> secondaryOwner, BigDecimal penaltyFee, String secretKey,
-                    BigDecimal minimumBalance, BigDecimal monthlyMaintenanceFee, Status status) {
-        super(id, balance, primaryOwner, secondaryOwner, penaltyFee);
+    public Checking(String checkingId, BigDecimal balance, String secretKey, BigDecimal minimumBalance,
+                    BigDecimal monthlyMaintenanceFee, Status status) {
+        setBalance(balance);
         setCheckingId(checkingId);
         setMinimumBalance(minimumBalance);
         setMonthlyMaintenanceFee(monthlyMaintenanceFee);
@@ -40,6 +41,14 @@ public class Checking extends Account {
 
     public void setCheckingId(String checkingId) {
         this.checkingId = checkingId;
+    }
+
+    public BigDecimal getBalance() {
+        return balance;
+    }
+
+    public void setBalance(BigDecimal balance) {
+        this.balance = balance;
     }
 
     public BigDecimal getMinimumBalance() {
@@ -75,13 +84,21 @@ public class Checking extends Account {
         this.secretKey = secretKey;
     }
 
+    public Account getAccount() {
+        return account;
+    }
+
+    public void setAccount(Account account) {
+        this.account = account;
+    }
+
     public void setCheckingBalance(BigDecimal balance) {
         if (balance.doubleValue() < getMinimumBalance().doubleValue()) {
             System.err.println("The balance for a checking account can not be less than the minimum balance: 250." +
                     "A penalty fee of 40 will be deducted from the current balance.");
-            super.setBalance(balance.subtract(BigDecimal.valueOf(40)));
+            setBalance(balance.subtract(getAccount().getPenaltyFee()));
         } else {
-            super.setBalance(balance);
+            setBalance(balance);
         }
     }
 }

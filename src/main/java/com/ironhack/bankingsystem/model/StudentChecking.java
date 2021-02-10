@@ -2,31 +2,45 @@ package com.ironhack.bankingsystem.model;
 
 import com.ironhack.bankingsystem.enums.Status;
 
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.Optional;
 
 @Entity
-public class StudentChecking extends Account {
-
+public class StudentChecking {
+    @Id
+    private String studentCheckingId;
     private String secretKey;
+    private BigDecimal balance;
     @Enumerated(value = EnumType.STRING)
     private Status status;
 
-    public StudentChecking(Long id, BigDecimal balance, AccountHolder primaryOwner,
-                           Optional<AccountHolder> secondaryOwner, BigDecimal penaltyFee) {
-        super(id, balance, primaryOwner, secondaryOwner, penaltyFee);
+    @ManyToOne
+    private Account account;
+
+    public StudentChecking() {
     }
 
-    public StudentChecking(Long id, BigDecimal balance, AccountHolder primaryOwner,
-                           Optional<AccountHolder> secondaryOwner, BigDecimal penaltyFee, String secretKey,
-                           Status status) {
-        super(id, balance, primaryOwner, secondaryOwner, penaltyFee);
-        this.secretKey = secretKey;
-        this.status = status;
+    public StudentChecking(BigDecimal balance, String studentCheckingId, String secretKey, Status status) {
+        setStudentCheckingId(studentCheckingId);
+        setBalance(balance);
+        setSecretKey(secretKey);
+        setStatus(status);
+    }
+
+    public String getStudentCheckingId() {
+        return studentCheckingId;
+    }
+
+    public void setStudentCheckingId(String studentCheckingId) {
+        this.studentCheckingId = studentCheckingId;
+    }
+
+    public BigDecimal getBalance() {
+        return balance;
+    }
+
+    public void setBalance(BigDecimal balance) {
+        this.balance = balance;
     }
 
     public String getSecretKey() {

@@ -1,6 +1,7 @@
 package com.ironhack.bankingsystem.model;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -13,6 +14,15 @@ public class User {
 
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Role> roles;
+
+    @OneToOne(mappedBy = "user")
+    private Admin admin;
+
+    @OneToOne(mappedBy = "user")
+    private ThirdParty thirdParty;
+
+    @OneToOne(mappedBy = "user")
+    private AccountHolder accountHolder;
 
     public User() {
     }

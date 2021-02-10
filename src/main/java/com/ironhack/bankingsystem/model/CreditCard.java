@@ -2,25 +2,32 @@ package com.ironhack.bankingsystem.model;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.Optional;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Entity
-public class CreditCard extends Account {
+public class CreditCard {
     @Id
     private Long creditCardId;
+    private BigDecimal balance;
     private BigDecimal creditLimit;
     private Double interestRate;
 
-    public CreditCard(Long id, BigDecimal balance, AccountHolder primaryOwner, Optional<AccountHolder> secondaryOwner,
-                      BigDecimal penaltyFee) {
-        super(id, balance, primaryOwner, secondaryOwner, penaltyFee);
+    private LocalDateTime ldt;
+
+    @ManyToOne
+    private Account account;
+
+
+    public CreditCard() {
         this.creditLimit = new BigDecimal(100);
         this.interestRate = 0.2;
+        Timestamp ts = new Timestamp(System.currentTimeMillis());
+        this.ldt = ts.toLocalDateTime();
     }
 
-    public CreditCard(Long id, Long creditCardId, BigDecimal balance, AccountHolder primaryOwner, Optional<AccountHolder> secondaryOwner,
-                      BigDecimal penaltyFee, BigDecimal creditLimit, Double interestRate) {
-        super(id, balance, primaryOwner, secondaryOwner, penaltyFee);
+    public CreditCard(Long creditCardId, BigDecimal balance, BigDecimal creditLimit, Double interestRate) {
+        setBalance(balance);
         setCreditCardId(creditCardId);
         setInterestRate(interestRate);
         setCreditLimit(creditLimit);
@@ -32,6 +39,11 @@ public class CreditCard extends Account {
 
     public void setCreditCardId(Long creditCardId) {
         this.creditCardId = creditCardId;
+    }
+
+
+    public void setBalance(BigDecimal balance) {
+        this.balance = balance;
     }
 
     public BigDecimal getCreditLimit() {
@@ -52,6 +64,14 @@ public class CreditCard extends Account {
         return interestRate;
     }
 
+    public LocalDateTime getLdt() {
+        return ldt;
+    }
+
+    public void setLdt(LocalDateTime ldt) {
+        this.ldt = ldt;
+    }
+
     public void setInterestRate(Double interestRate) {
         if (interestRate <= 0.2 && interestRate >= 0.1) {
             this.interestRate = interestRate;
@@ -60,5 +80,18 @@ public class CreditCard extends Account {
                     "default value.");
             this.interestRate = 0.2;
         }
+    }
+
+    public BigDecimal getBalance() {
+        Timestamp ts = new Timestamp(System.currentTimeMillis());
+        LocalDateTime newLdt = ts.toLocalDateTime();
+        if (newLdt.getMonthValue() > getLdt().getMonthValue()) {
+            if (newLdt.getDayOfMonth() >= getLdt().getDayOfMonth()) {
+                setBalance(getBalance().multiply(new BigDecimal(getInterestRate()/12+1)));
+                setLdt(newLdt);
+                return balance;
+            }
+        }
+        return balance;
     }
 }

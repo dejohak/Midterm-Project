@@ -1,29 +1,39 @@
 package com.ironhack.bankingsystem.model;
 
-import com.ironhack.bankingsystem.model.AccountHolder;
-
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.Optional;
+import java.util.List;
 
 @Entity
 public class Account {
     @Id
     private Long id;
-    private BigDecimal balance;
-    @Embedded
+    @OneToOne(mappedBy = "account")
     private AccountHolder primaryOwner;
-    @Embedded
-    private Optional<AccountHolder> secondaryOwner;
+    @OneToOne(mappedBy = "account")
+    private AccountHolder secondaryOwner;
     private BigDecimal penaltyFee;
 
 
-    public Account(Long id, BigDecimal balance, AccountHolder primaryOwner, Optional<AccountHolder> secondaryOwner,
+    @OneToMany(mappedBy = "account", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Checking> checkingList;
+
+    @OneToMany(mappedBy = "account", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<StudentChecking> studentCheckingList;
+
+    @OneToMany(mappedBy = "account", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<CreditCard> creditCards;
+
+    @OneToMany(mappedBy = "account", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Savings> savingsList;
+
+
+    public Account() {
+    }
+
+    public Account(Long id, AccountHolder primaryOwner, AccountHolder secondaryOwner,
                    BigDecimal penaltyFee) {
         this.id = id;
-        this.balance = balance;
         this.primaryOwner = primaryOwner;
         this.secondaryOwner = secondaryOwner;
         this.penaltyFee = penaltyFee;
@@ -37,13 +47,6 @@ public class Account {
         this.id = id;
     }
 
-    public BigDecimal getBalance() {
-        return balance;
-    }
-
-    public void setBalance(BigDecimal balance) {
-        this.balance = balance;
-    }
 
     public AccountHolder getPrimaryOwner() {
         return primaryOwner;
@@ -53,11 +56,11 @@ public class Account {
         this.primaryOwner = primaryAccountHolder;
     }
 
-    public Optional<AccountHolder> getSecondaryOwner() {
+    public AccountHolder getSecondaryOwner() {
         return secondaryOwner;
     }
 
-    public void setSecondaryOwner(Optional<AccountHolder> secondaryOwner) {
+    public void setSecondaryOwner(AccountHolder secondaryOwner) {
         this.secondaryOwner = secondaryOwner;
     }
 
@@ -69,4 +72,19 @@ public class Account {
         this.penaltyFee = penaltyFee;
     }
 
+    public List<Checking> getCheckingList() {
+        return checkingList;
+    }
+
+    public void setCheckingList(List<Checking> checkingList) {
+        this.checkingList = checkingList;
+    }
+
+    public List<CreditCard> getCreditCards() {
+        return creditCards;
+    }
+
+    public void setCreditCards(List<CreditCard> creditCards) {
+        this.creditCards = creditCards;
+    }
 }

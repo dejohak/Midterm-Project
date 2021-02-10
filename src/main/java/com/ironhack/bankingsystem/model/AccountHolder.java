@@ -4,7 +4,6 @@ import com.ironhack.bankingsystem.classes.Address;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.Optional;
 
 @Entity
 public class AccountHolder {
@@ -15,12 +14,23 @@ public class AccountHolder {
     @Embedded
     private Address primaryAddress;
     @Embedded
-    private Optional<Address> secondaryAddress;
+    @AttributeOverrides({
+            @AttributeOverride(name = "street", column = @Column(name = "secondary_street")),
+            @AttributeOverride(name = "city", column = @Column(name = "secondary_city")),
+            @AttributeOverride(name = "postalCode", column = @Column(name = "secondary_postal_code"))
+    })
+    private Address secondaryAddress;
+
+    @OneToOne
+    private Account account;
+
+    @OneToOne
+    private User user;
 
     public AccountHolder() {
     }
 
-    public AccountHolder(String id, String name, Date birthDate, Address primaryAddress, Optional<Address> secondaryAddress) {
+    public AccountHolder(String id, String name, Date birthDate, Address primaryAddress, Address secondaryAddress) {
         this.id = id;
         this.name = name;
         this.birthDate = birthDate;
@@ -60,11 +70,11 @@ public class AccountHolder {
         this.primaryAddress = primaryAddress;
     }
 
-    public Optional<Address> getSecondaryAddress() {
+    public Address getSecondaryAddress() {
         return secondaryAddress;
     }
 
-    public void setSecondaryAddress(Optional<Address> secondaryAddress) {
+    public void setSecondaryAddress(Address secondaryAddress) {
         this.secondaryAddress = secondaryAddress;
     }
 }
