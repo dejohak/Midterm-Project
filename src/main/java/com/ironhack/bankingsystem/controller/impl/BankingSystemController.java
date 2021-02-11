@@ -18,15 +18,26 @@ import java.math.BigDecimal;
 public class BankingSystemController implements IBankingSystemController {
 
     @Autowired
-    private CheckingRepository checkingRepository;
-
-    @Autowired
     private BakingSystemService bakingSystemService;
 
     @GetMapping("/get/checking-balance/{id}")
     @ResponseStatus(HttpStatus.OK)
     public Money getCheckingBalance(@PathVariable @Valid Long id) {
         Money balance = bakingSystemService.getCheckingBalance(id);
+        return balance;
+    }
+
+    @GetMapping("/get/student-checking-balance/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public Money getStudentCheckingBalance(@PathVariable @Valid Long id) {
+        Money balance = bakingSystemService.getStCheckingBalance(id);
+        return balance;
+    }
+
+    @GetMapping("/get/credit-card-balance/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public Money getCreditCardBalance(@PathVariable @Valid Long id) {
+        Money balance = bakingSystemService.getCreditCardBalance(id);
         return balance;
     }
 }
