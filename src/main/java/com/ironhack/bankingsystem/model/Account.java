@@ -3,14 +3,24 @@ package com.ironhack.bankingsystem.model;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 public class Account {
     @Id
     private Long id;
-    @OneToOne(mappedBy = "account")
+    /*@OneToMany(mappedBy = "account")
+    private Set<AccountHolder> accountHolders;*/
+    @OneToOne
     private AccountHolder primaryOwner;
-    @OneToOne(mappedBy = "account")
+    @OneToOne
+    @AttributeOverrides({
+            @AttributeOverride(name = "id", column = @Column(name = "secondary_owner_id")),
+            @AttributeOverride(name = "name", column = @Column(name = "secondary_owner_name")),
+            @AttributeOverride(name = "birthDate", column = @Column(name = "secondary_owner_name")),
+            @AttributeOverride(name = "primaryAddress", column = @Column(name = "secondary_owner_primary_address")),
+            @AttributeOverride(name = "secondaryAddress", column = @Column(name = "secondary_owner_secondary_address"))
+    })
     private AccountHolder secondaryOwner;
     private BigDecimal penaltyFee;
 
@@ -31,12 +41,9 @@ public class Account {
     public Account() {
     }
 
-    public Account(Long id, AccountHolder primaryOwner, AccountHolder secondaryOwner,
-                   BigDecimal penaltyFee) {
-        this.id = id;
-        this.primaryOwner = primaryOwner;
-        this.secondaryOwner = secondaryOwner;
-        this.penaltyFee = penaltyFee;
+    public Account(Long id, BigDecimal penaltyFee) {
+        setId(id);
+        setPenaltyFee(penaltyFee);
     }
 
     public Long getId() {
@@ -47,21 +54,12 @@ public class Account {
         this.id = id;
     }
 
-
     public AccountHolder getPrimaryOwner() {
         return primaryOwner;
     }
 
-    public void setPrimaryOwner(AccountHolder primaryAccountHolder) {
-        this.primaryOwner = primaryAccountHolder;
-    }
-
-    public AccountHolder getSecondaryOwner() {
-        return secondaryOwner;
-    }
-
-    public void setSecondaryOwner(AccountHolder secondaryOwner) {
-        this.secondaryOwner = secondaryOwner;
+    public void setPrimaryOwner(AccountHolder primaryOwner) {
+        this.primaryOwner = primaryOwner;
     }
 
     public BigDecimal getPenaltyFee() {

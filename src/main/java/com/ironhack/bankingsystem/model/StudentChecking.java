@@ -1,16 +1,16 @@
 package com.ironhack.bankingsystem.model;
 
+import com.ironhack.bankingsystem.classes.Money;
 import com.ironhack.bankingsystem.enums.Status;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
 
 @Entity
 public class StudentChecking {
     @Id
     private String studentCheckingId;
     private String secretKey;
-    private BigDecimal balance;
+    private Money balance;
     @Enumerated(value = EnumType.STRING)
     private Status status;
 
@@ -20,7 +20,7 @@ public class StudentChecking {
     public StudentChecking() {
     }
 
-    public StudentChecking(BigDecimal balance, String studentCheckingId, String secretKey, Status status) {
+    public StudentChecking(Money balance, String studentCheckingId, String secretKey, Status status) {
         setStudentCheckingId(studentCheckingId);
         setBalance(balance);
         setSecretKey(secretKey);
@@ -35,11 +35,11 @@ public class StudentChecking {
         this.studentCheckingId = studentCheckingId;
     }
 
-    public BigDecimal getBalance() {
+    public Money getBalance() {
         return balance;
     }
 
-    public void setBalance(BigDecimal balance) {
+    public void setBalance(Money balance) {
         this.balance = balance;
     }
 

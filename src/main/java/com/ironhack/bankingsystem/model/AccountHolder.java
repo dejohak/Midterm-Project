@@ -27,15 +27,25 @@ public class AccountHolder {
     @OneToOne
     private User user;
 
+
     public AccountHolder() {
     }
 
-    public AccountHolder(String id, String name, Date birthDate, Address primaryAddress, Address secondaryAddress) {
+    public AccountHolder(String id, String name, Date birthDate, Address primaryAddress, Account account) {
+        this.id = id;
+        this.name = name;
+        this.birthDate = birthDate;
+        this.primaryAddress = primaryAddress;
+        this.account = account;
+    }
+
+    public AccountHolder(String id, String name, Date birthDate, Address primaryAddress, Address secondaryAddress, Account account) {
         this.id = id;
         this.name = name;
         this.birthDate = birthDate;
         this.primaryAddress = primaryAddress;
         this.secondaryAddress = secondaryAddress;
+        this.account = account;
     }
 
     public String getId() {

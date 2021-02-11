@@ -1,5 +1,7 @@
 package com.ironhack.bankingsystem.model;
 
+import com.ironhack.bankingsystem.classes.Money;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -9,7 +11,7 @@ import java.time.LocalDateTime;
 public class CreditCard {
     @Id
     private Long creditCardId;
-    private BigDecimal balance;
+    private Money balance;
     private BigDecimal creditLimit;
     private Double interestRate;
 
@@ -26,11 +28,19 @@ public class CreditCard {
         this.ldt = ts.toLocalDateTime();
     }
 
-    public CreditCard(Long creditCardId, BigDecimal balance, BigDecimal creditLimit, Double interestRate) {
+    public CreditCard(Long creditCardId, Money balance) {
         setBalance(balance);
         setCreditCardId(creditCardId);
-        setInterestRate(interestRate);
-        setCreditLimit(creditLimit);
+        this.creditLimit = new BigDecimal(100);
+        this.interestRate = 0.2;
+    }
+
+    public CreditCard(Long creditCardId, Money balance, Account account) {
+        setBalance(balance);
+        setCreditCardId(creditCardId);
+        setAccount(account);
+        this.creditLimit = new BigDecimal(100);
+        this.interestRate = 0.2;
     }
 
     public Long getCreditCardId() {
@@ -42,7 +52,7 @@ public class CreditCard {
     }
 
 
-    public void setBalance(BigDecimal balance) {
+    public void setBalance(Money balance) {
         this.balance = balance;
     }
 
@@ -82,16 +92,27 @@ public class CreditCard {
         }
     }
 
-    public BigDecimal getBalance() {
+    public Money getBalance() {
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         LocalDateTime newLdt = ts.toLocalDateTime();
         if (newLdt.getMonthValue() > getLdt().getMonthValue()) {
             if (newLdt.getDayOfMonth() >= getLdt().getDayOfMonth()) {
-                setBalance(getBalance().multiply(new BigDecimal(getInterestRate()/12+1)));
+                balance.increaseAmount(balance
+                                .getAmount()
+                                .multiply(BigDecimal.valueOf(getInterestRate()/12)));
+                setBalance(balance);
                 setLdt(newLdt);
                 return balance;
             }
         }
         return balance;
+    }
+
+    public Account getAccount() {
+        return account;
+    }
+
+    public void setAccount(Account account) {
+        this.account = account;
     }
 }

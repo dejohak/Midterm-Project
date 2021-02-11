@@ -1,5 +1,6 @@
 package com.ironhack.bankingsystem.model;
 
+import com.ironhack.bankingsystem.classes.Money;
 import com.ironhack.bankingsystem.enums.Status;
 
 import javax.persistence.*;
@@ -9,7 +10,8 @@ import java.math.BigDecimal;
 public class Checking {
     @Id
     private String checkingId;
-    private BigDecimal balance;
+    @Embedded
+    private Money balance;
     private String secretKey;
     private BigDecimal minimumBalance;
     private BigDecimal monthlyMaintenanceFee;
@@ -25,14 +27,23 @@ public class Checking {
         this.monthlyMaintenanceFee = new BigDecimal(12);
     }
 
-    public Checking(String checkingId, BigDecimal balance, String secretKey, BigDecimal minimumBalance,
-                    BigDecimal monthlyMaintenanceFee, Status status) {
+    public Checking(String checkingId, Money balance, String secretKey, Status status) {
         setBalance(balance);
         setCheckingId(checkingId);
-        setMinimumBalance(minimumBalance);
-        setMonthlyMaintenanceFee(monthlyMaintenanceFee);
+        this.minimumBalance = new BigDecimal(250);
+        this.monthlyMaintenanceFee = new BigDecimal(12);
         setSecretKey(secretKey);
         setStatus(status);
+    }
+
+    public Checking(String checkingId, Money balance, String secretKey, Status status, Account account) {
+        setBalance(balance);
+        setCheckingId(checkingId);
+        this.minimumBalance = new BigDecimal(250);
+        this.monthlyMaintenanceFee = new BigDecimal(12);
+        setSecretKey(secretKey);
+        setStatus(status);
+        setAccount(account);
     }
 
     public String getCheckingId() {
@@ -43,11 +54,11 @@ public class Checking {
         this.checkingId = checkingId;
     }
 
-    public BigDecimal getBalance() {
+    public Money getBalance() {
         return balance;
     }
 
-    public void setBalance(BigDecimal balance) {
+    public void setBalance(Money balance) {
         this.balance = balance;
     }
 
@@ -66,7 +77,6 @@ public class Checking {
     public void setMonthlyMaintenanceFee(BigDecimal monthlyMaintenanceFee) {
         this.monthlyMaintenanceFee = monthlyMaintenanceFee;
     }
-
 
     public Status getStatus() {
         return status;
@@ -92,13 +102,12 @@ public class Checking {
         this.account = account;
     }
 
-    public void setCheckingBalance(BigDecimal balance) {
-        if (balance.doubleValue() < getMinimumBalance().doubleValue()) {
+    public void setCheckingBalance(Money balance) {
+        if (balance.getAmount().doubleValue() < minimumBalance.doubleValue()) {
             System.err.println("The balance for a checking account can not be less than the minimum balance: 250." +
                     "A penalty fee of 40 will be deducted from the current balance.");
-            setBalance(balance.subtract(getAccount().getPenaltyFee()));
-        } else {
-            setBalance(balance);
+            balance.decreaseAmount(getAccount().getPenaltyFee());
         }
+        this.balance = balance;
     }
 }

@@ -1,9 +1,9 @@
 package com.ironhack.bankingsystem.repository;
 
-import com.ironhack.bankingsystem.model.Checking;
+import com.ironhack.bankingsystem.model.AccountHolder;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface CheckingRepository extends JpaRepository<Checking, String> {
+public interface AccountHolderRepository extends JpaRepository<AccountHolder, String> {
 }

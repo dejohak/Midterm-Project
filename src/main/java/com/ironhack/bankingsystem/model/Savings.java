@@ -1,5 +1,6 @@
 package com.ironhack.bankingsystem.model;
 
+import com.ironhack.bankingsystem.classes.Money;
 import com.ironhack.bankingsystem.enums.Status;
 
 import javax.persistence.*;
@@ -12,7 +13,7 @@ public class Savings {
     @Id
     private String savingsId;
     private String secretKey;
-    private BigDecimal balance;
+    private Money balance;
     private BigDecimal minimumBalance;
     private Double interestRate;
     @Enumerated(value = EnumType.STRING)
@@ -31,7 +32,7 @@ public class Savings {
         this.ldt = ts.toLocalDateTime();
     }
 
-    public Savings(String savingsId, BigDecimal balance, String secretKey, BigDecimal minimumBalance, Double interestRate,
+    public Savings(String savingsId, Money balance, String secretKey, BigDecimal minimumBalance, Double interestRate,
                    Status status) {
         setBalance(balance);
         setSavingsId(savingsId);
@@ -49,7 +50,7 @@ public class Savings {
         this.savingsId = savingsId;
     }
 
-    public void setBalance(BigDecimal balance) {
+    public void setBalance(Money balance) {
         this.balance = balance;
     }
 
@@ -105,12 +106,17 @@ public class Savings {
         return ldt;
     }
 
-    public BigDecimal getBalance() {
+    public Money getBalance() {
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         LocalDateTime newLdt = ts.toLocalDateTime();
         if (newLdt.getYear() > getLdt().getYear()) {
             if (newLdt.getDayOfYear() >= getLdt().getDayOfYear()) {
-                setBalance(getBalance().multiply(new BigDecimal(getInterestRate()+1)));
+                balance
+                        .increaseAmount(balance
+                                .getAmount()
+                                .multiply(BigDecimal.valueOf(getInterestRate()))
+                );
+                setBalance(balance);
                 setLdt(newLdt);
                 return balance;
             }
