@@ -3,14 +3,11 @@ package com.ironhack.bankingsystem.model;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 public class Account {
     @Id
     private Long id;
-    /*@OneToMany(mappedBy = "account")
-    private Set<AccountHolder> accountHolders;*/
     @OneToOne
     private AccountHolder primaryOwner;
     @OneToOne
@@ -19,7 +16,7 @@ public class Account {
             @AttributeOverride(name = "name", column = @Column(name = "secondary_owner_name")),
             @AttributeOverride(name = "birthDate", column = @Column(name = "secondary_owner_name")),
             @AttributeOverride(name = "primaryAddress", column = @Column(name = "secondary_owner_primary_address")),
-            @AttributeOverride(name = "secondaryAddress", column = @Column(name = "secondary_owner_secondary_address"))
+            @AttributeOverride(name = "mailingAddress", column = @Column(name = "secondary_owner_mailing_address"))
     })
     private AccountHolder secondaryOwner;
     private BigDecimal penaltyFee;

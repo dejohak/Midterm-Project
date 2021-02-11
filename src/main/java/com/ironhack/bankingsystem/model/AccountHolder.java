@@ -80,11 +80,11 @@ public class AccountHolder {
         this.primaryAddress = primaryAddress;
     }
 
-    public Address getSecondaryAddress() {
+    public Address getMailingAddress() {
         return mailingAddress;
     }
 
-    public void setSecondaryAddress(Address mailingAddress) {
+    public void setMailingAddress(Address mailingAddress) {
         this.mailingAddress = mailingAddress;
     }
 }

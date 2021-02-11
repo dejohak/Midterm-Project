@@ -1,6 +1,8 @@
 package com.ironhack.bankingsystem.model;
 
 
+import com.ironhack.bankingsystem.utils.PasswordUtil;
+
 import javax.persistence.*;
 
 @Entity
@@ -17,9 +19,9 @@ public class ThirdParty {
     public ThirdParty() {
     }
 
-    public ThirdParty(String name, String hashedKey) {
-        this.name = name;
-        this.hashedKey = hashedKey;
+    public ThirdParty(String name) {
+        setName(name);
+        this.hashedKey = PasswordUtil.encryptPassword(name);
     }
 
     public String getName() {
@@ -42,7 +44,4 @@ public class ThirdParty {
         return hashedKey;
     }
 
-    public void setHashedKey(String hashedKey) {
-        this.hashedKey = hashedKey;
-    }
 }
