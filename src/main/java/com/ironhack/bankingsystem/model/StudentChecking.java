@@ -8,8 +8,8 @@ import javax.persistence.*;
 @Entity
 public class StudentChecking {
     @Id
-    private String studentCheckingId;
-    private String secretKey;
+    private Long studentCheckingId;
+    private Integer secretKey;
     private Money balance;
     @Enumerated(value = EnumType.STRING)
     private Status status;
@@ -20,18 +20,24 @@ public class StudentChecking {
     public StudentChecking() {
     }
 
-    public StudentChecking(Money balance, String studentCheckingId, String secretKey, Status status) {
+    public StudentChecking(Long studentCheckingId, Integer secretKey, Status status) {
+        this.studentCheckingId = studentCheckingId;
+        this.secretKey = secretKey;
+        this.status = status;
+    }
+
+    public StudentChecking(Money balance, Long studentCheckingId, Integer secretKey, Status status) {
         setStudentCheckingId(studentCheckingId);
         setBalance(balance);
         setSecretKey(secretKey);
         setStatus(status);
     }
 
-    public String getStudentCheckingId() {
+    public Long getStudentCheckingId() {
         return studentCheckingId;
     }
 
-    public void setStudentCheckingId(String studentCheckingId) {
+    public void setStudentCheckingId(Long studentCheckingId) {
         this.studentCheckingId = studentCheckingId;
     }
 
@@ -43,11 +49,11 @@ public class StudentChecking {
         this.balance = balance;
     }
 
-    public String getSecretKey() {
+    public Integer getSecretKey() {
         return secretKey;
     }
 
-    public void setSecretKey(String secretKey) {
+    public void setSecretKey(Integer secretKey) {
         this.secretKey = secretKey;
     }
 

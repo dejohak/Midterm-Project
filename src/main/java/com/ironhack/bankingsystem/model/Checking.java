@@ -9,10 +9,10 @@ import java.math.BigDecimal;
 @Entity
 public class Checking {
     @Id
-    private String checkingId;
+    private Long checkingId;
     @Embedded
     private Money balance;
-    private String secretKey;
+    private Integer secretKey;
     private BigDecimal minimumBalance;
     private BigDecimal monthlyMaintenanceFee;
     @Enumerated(value = EnumType.STRING)
@@ -27,7 +27,15 @@ public class Checking {
         this.monthlyMaintenanceFee = new BigDecimal(12);
     }
 
-    public Checking(String checkingId, Money balance, String secretKey, Status status) {
+    public Checking(Long checkingId, Integer secretKey, Status status) {
+        this.checkingId = checkingId;
+        this.secretKey = secretKey;
+        this.status = status;
+        this.minimumBalance = new BigDecimal(250);
+        this.monthlyMaintenanceFee = new BigDecimal(12);
+    }
+
+    public Checking(Long checkingId, Money balance, Integer secretKey, Status status) {
         setBalance(balance);
         setCheckingId(checkingId);
         this.minimumBalance = new BigDecimal(250);
@@ -36,7 +44,7 @@ public class Checking {
         setStatus(status);
     }
 
-    public Checking(String checkingId, Money balance, String secretKey, Status status, Account account) {
+    public Checking(Long checkingId, Money balance, Integer secretKey, Status status, Account account) {
         setBalance(balance);
         setCheckingId(checkingId);
         this.minimumBalance = new BigDecimal(250);
@@ -46,11 +54,11 @@ public class Checking {
         setAccount(account);
     }
 
-    public String getCheckingId() {
+    public Long getCheckingId() {
         return checkingId;
     }
 
-    public void setCheckingId(String checkingId) {
+    public void setCheckingId(Long checkingId) {
         this.checkingId = checkingId;
     }
 
@@ -86,11 +94,11 @@ public class Checking {
         this.status = status;
     }
 
-    public String getSecretKey() {
+    public Integer getSecretKey() {
         return secretKey;
     }
 
-    public void setSecretKey(String secretKey) {
+    public void setSecretKey(Integer secretKey) {
         this.secretKey = secretKey;
     }
 

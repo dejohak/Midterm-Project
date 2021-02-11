@@ -15,11 +15,11 @@ public class AccountHolder {
     private Address primaryAddress;
     @Embedded
     @AttributeOverrides({
-            @AttributeOverride(name = "street", column = @Column(name = "secondary_street")),
-            @AttributeOverride(name = "city", column = @Column(name = "secondary_city")),
-            @AttributeOverride(name = "postalCode", column = @Column(name = "secondary_postal_code"))
+            @AttributeOverride(name = "street", column = @Column(name = "mailing_street")),
+            @AttributeOverride(name = "city", column = @Column(name = "mailing_city")),
+            @AttributeOverride(name = "postalCode", column = @Column(name = "mailing_postal_code"))
     })
-    private Address secondaryAddress;
+    private Address mailingAddress;
 
     @OneToOne
     private Account account;
@@ -44,7 +44,7 @@ public class AccountHolder {
         this.name = name;
         this.birthDate = birthDate;
         this.primaryAddress = primaryAddress;
-        this.secondaryAddress = secondaryAddress;
+        this.mailingAddress = secondaryAddress;
         this.account = account;
     }
 
@@ -81,10 +81,10 @@ public class AccountHolder {
     }
 
     public Address getSecondaryAddress() {
-        return secondaryAddress;
+        return mailingAddress;
     }
 
-    public void setSecondaryAddress(Address secondaryAddress) {
-        this.secondaryAddress = secondaryAddress;
+    public void setSecondaryAddress(Address mailingAddress) {
+        this.mailingAddress = mailingAddress;
     }
 }
