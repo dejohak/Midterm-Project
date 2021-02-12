@@ -29,6 +29,15 @@ public class BakingSystemService {
     private CreditCardRepository creditCardRepository;
     @Autowired
     private SavingsRepository savingsRepository;
+    @Autowired
+    private RoleRepository roleRepository;
+
+    public AccountHolder findAccountHolder(Long id) {
+        Optional<AccountHolder> accountHolder = accountHolderRepository.findById(id);
+        if (accountHolder.isPresent()) {
+            return accountHolder.get();
+        } else throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account Holder not found");
+    }
 
     public Money getCheckingBalance(Long id) {
         Optional<Checking> checking = checkingRepository.findById(id);
@@ -59,13 +68,18 @@ public class BakingSystemService {
     }
 
     public AccountHolder createAccountHolder(AccountHolderDTO accountHolderDTO) {
-        if (!accountHolderDTO.getRole().equals("USER")) {
+        if (!accountHolderDTO.getRole().getName().equals("USER")) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Account holders can only be USER");
         } else {
+            Role role = new Role("USER");
+            roleRepository.save(role);
             AccountHolder accountHolder = new AccountHolder(accountHolderDTO.getUsername(), accountHolderDTO.getPassword(),
-                    accountHolderDTO.getRole(), accountHolderDTO.getName(), accountHolderDTO.getBirthDate(),
+                    role, accountHolderDTO.getName(), accountHolderDTO.getBirthDate(),
                     accountHolderDTO.getPrimaryAddress());
-            return accountHolderRepository.save(accountHolder);
+            accountHolderRepository.save(accountHolder);
+            role.setUser(accountHolder);
+            roleRepository.save(role);
+            return accountHolder;
         }
     }
 

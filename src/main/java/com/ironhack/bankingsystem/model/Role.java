@@ -15,6 +15,10 @@ public class Role {
     public Role() {
     }
 
+    public Role(String name) {
+        this.name = name;
+    }
+
     public Role(String name, User user) {
         this.name = name;
         this.user = user;
@@ -34,10 +38,6 @@ public class Role {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public User getUser() {
-        return user;
     }
 
     public void setUser(User user) {

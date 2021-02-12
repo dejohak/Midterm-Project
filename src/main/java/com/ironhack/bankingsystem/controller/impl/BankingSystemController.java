@@ -19,6 +19,12 @@ public class BankingSystemController implements IBankingSystemController {
     @Autowired
     private BakingSystemService bakingSystemService;
 
+    @GetMapping("/account-holder/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public AccountHolder getAccountHolder(@PathVariable Long id) {
+        return bakingSystemService.findAccountHolder(id);
+    }
+
     @PostMapping("/create/account-holder")
     @ResponseStatus(HttpStatus.CREATED)
     public AccountHolder createAccountHolder(@RequestBody @Valid AccountHolderDTO accountHolderDTO) {

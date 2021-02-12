@@ -4,11 +4,13 @@ import com.ironhack.bankingsystem.classes.Money;
 import com.ironhack.bankingsystem.controller.dto.AccountHolderDTO;
 import com.ironhack.bankingsystem.controller.dto.CheckingDTO;
 import com.ironhack.bankingsystem.model.AccountHolder;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.math.BigDecimal;
 
 
 public interface IBankingSystemController {
+    public AccountHolder getAccountHolder(Long id);
     public Money getCheckingBalance(Long id);
     public Money getStudentCheckingBalance(Long id);
     public Money getCreditCardBalance(Long id);

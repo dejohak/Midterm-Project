@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.Optional;
 
 @Component
 public class Data implements CommandLineRunner {
@@ -26,28 +27,47 @@ public class Data implements CommandLineRunner {
     private StudentCheckingRepository studentCheckingRepository;
     @Autowired
     private CreditCardRepository creditCardRepository;
+    @Autowired
+    private AdminRepository adminRepository;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private RoleRepository roleRepository;
 
+
+//  This method has been created merely to add some sample data to the DB and, hence, to have the opportunity to test
+//  the http requests.
     public void sampleData() {
+        Role role = new Role("ADMIN");
+        Role role1 = new Role("USER");
+        roleRepository.save(role);
+        roleRepository.save(role1);
+        adminRepository.save(
+                new Admin(
+                        "dani",
+                        "$2a$10$BOyKEH2lV31.TE4dmPdU1.BVJ/tE998zpZgxIxoEwucL6MTNbYkZW",
+                        role,
+                        "Dani Juan"
+                )
+        );
 
-
-       /* Account account = new Account(2343545232243345L, new BigDecimal(40));
-
-        AccountHolder accountHolder = new AccountHolder("478123456V", "Leo Messi",
-                new Date(87, 5, 25),
-                new Address("Calle Falsa 123", "Rosario", "08940"),
-                account);
-
-        Checking checking = new Checking(3124123556720012L, new Money(new BigDecimal("853.89")),
-                234251235, Status.ACTIVE, account);
-
-        CreditCard creditCard = new CreditCard(455698842367128L, new Money(new BigDecimal(250)),
-                account);
-
-
-        accountRepository.save(account);
+        Optional<User> user = userRepository.findById(1L);
+        role.setUser(user.get());
+        roleRepository.save(role);
+        Address address = new Address("Calle blabla", "Sant Just Desvern", "08960");
+        Address address1 = new Address("Calle bleble", "Rubí", "08191");
+        AccountHolder accountHolder = new AccountHolder("dejohak",
+                "$2a$10$BOyKEH2lV31.TE4dmPdU1.BVJ/tE998zpZgxIxoEwucL6MTNbYkZW",
+                role1, "Dani Juan", new Date(93, 7, 14), address);
+        AccountHolder accountHolder1 = new AccountHolder("julieta",
+                "$2a$10$5Hg0eqVOKmrohYmVl343CepXrW/zFvpD6c0dm1tQne0Ewpw4WSG2a",
+                role1, "Júlia Galceran", new Date(95, 8, 7), address1);
         accountHolderRepository.save(accountHolder);
-        checkingRepository.save(checking);
-        creditCardRepository.save(creditCard);*/
+        accountHolderRepository.save(accountHolder1);
+        user = userRepository.findById(2L);
+        role1.setUser(user.get());
+        roleRepository.save(role1);
+        roleRepository.save(new Role("USER", accountHolder1));
     }
 
 

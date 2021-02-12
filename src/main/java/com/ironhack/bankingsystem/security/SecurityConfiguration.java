@@ -40,7 +40,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.httpBasic();
         http.csrf().disable().authorizeRequests()
                 .mvcMatchers("/get/**").hasRole("USER")
-                .mvcMatchers("/get/**").hasRole("ADMIN")
+                .mvcMatchers("/get/**", "/create/**", "/account-holder/{id}").hasRole("ADMIN")
                 .anyRequest().permitAll();
     }
 }
