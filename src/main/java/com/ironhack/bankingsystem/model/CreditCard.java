@@ -8,17 +8,12 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @Entity
-public class CreditCard {
-    @Id
-    private Long creditCardId;
-    private Money balance;
+@PrimaryKeyJoinColumn(name = "id")
+public class CreditCard extends Account{
     private BigDecimal creditLimit;
     private Double interestRate;
 
     private LocalDateTime ldt;
-
-    @ManyToOne
-    private Account account;
 
 
     public CreditCard() {
@@ -28,33 +23,14 @@ public class CreditCard {
         this.ldt = ts.toLocalDateTime();
     }
 
-    public CreditCard(Long creditCardId, Money balance) {
-        setBalance(balance);
-        setCreditCardId(creditCardId);
+    public CreditCard(Long id, Money balance, AccountHolder primaryOwner) {
+        super(id, balance, primaryOwner);
         this.creditLimit = new BigDecimal(100);
         this.interestRate = 0.2;
+        Timestamp ts = new Timestamp(System.currentTimeMillis());
+        this.ldt = ts.toLocalDateTime();
     }
 
-    public CreditCard(Long creditCardId, Money balance, Account account) {
-        setBalance(balance);
-        setCreditCardId(creditCardId);
-        setAccount(account);
-        this.creditLimit = new BigDecimal(100);
-        this.interestRate = 0.2;
-    }
-
-    public Long getCreditCardId() {
-        return creditCardId;
-    }
-
-    public void setCreditCardId(Long creditCardId) {
-        this.creditCardId = creditCardId;
-    }
-
-
-    public void setBalance(Money balance) {
-        this.balance = balance;
-    }
 
     public BigDecimal getCreditLimit() {
         return creditLimit;
@@ -92,27 +68,22 @@ public class CreditCard {
         }
     }
 
-    public Money getBalance() {
+    public Money getCreditCardBalance() {
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         LocalDateTime newLdt = ts.toLocalDateTime();
         if (newLdt.getMonthValue() > getLdt().getMonthValue()) {
             if (newLdt.getDayOfMonth() >= getLdt().getDayOfMonth()) {
-                balance.increaseAmount(balance
-                                .getAmount()
-                                .multiply(BigDecimal.valueOf(getInterestRate()/12)));
+                Money balance = new Money(super.getBalance()
+                                .increaseAmount(super.getBalance()
+                                    .getAmount()
+                                    .multiply(BigDecimal.valueOf(getInterestRate()/12))),
+                        super.getBalance().getCurrency());
                 setBalance(balance);
                 setLdt(newLdt);
                 return balance;
             }
         }
-        return balance;
+        return super.getBalance();
     }
 
-    public Account getAccount() {
-        return account;
-    }
-
-    public void setAccount(Account account) {
-        this.account = account;
-    }
 }

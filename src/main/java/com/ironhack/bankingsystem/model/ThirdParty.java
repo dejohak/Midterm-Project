@@ -4,17 +4,13 @@ package com.ironhack.bankingsystem.model;
 import com.ironhack.bankingsystem.utils.PasswordUtil;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
-public class ThirdParty {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@PrimaryKeyJoinColumn(name = "id")
+public class ThirdParty extends User{
     private String name;
     private String hashedKey;
-
-    @OneToOne
-    private User user;
 
     public ThirdParty() {
     }
@@ -24,20 +20,18 @@ public class ThirdParty {
         this.hashedKey = PasswordUtil.encryptPassword(name);
     }
 
+    public ThirdParty(String username, String password, Role role, String name) {
+        super(username, password, role);
+        this.name = name;
+        this.hashedKey = PasswordUtil.encryptPassword(name);
+    }
+
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getHashedKey() {

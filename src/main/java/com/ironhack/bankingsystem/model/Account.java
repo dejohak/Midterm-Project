@@ -1,13 +1,17 @@
 package com.ironhack.bankingsystem.model;
 
+import com.ironhack.bankingsystem.classes.Money;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.List;
 
 @Entity
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class Account {
     @Id
     private Long id;
+    @Embedded
+    private Money balance;
     @OneToOne
     private AccountHolder primaryOwner;
     @OneToOne
@@ -22,25 +26,28 @@ public class Account {
     private BigDecimal penaltyFee;
 
 
-    @OneToMany(mappedBy = "account", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Checking> checkingList;
-
-    @OneToMany(mappedBy = "account", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<StudentChecking> studentCheckingList;
-
-    @OneToMany(mappedBy = "account", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<CreditCard> creditCards;
-
-    @OneToMany(mappedBy = "account", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Savings> savingsList;
-
-
     public Account() {
     }
 
-    public Account(Long id, BigDecimal penaltyFee) {
-        setId(id);
-        setPenaltyFee(penaltyFee);
+    public Account(Money balance, AccountHolder primaryOwner) {
+        this.id = (long) (Math.random() * 10000000000000000L);
+        this.balance = balance;
+        this.primaryOwner = primaryOwner;
+    }
+
+    public Account(Long id, Money balance, AccountHolder primaryOwner) {
+        this.id = id;
+        this.balance = balance;
+        this.primaryOwner = primaryOwner;
+        this.penaltyFee = new BigDecimal(40);
+    }
+
+    public Account(Long id, Money balance, AccountHolder primaryOwner, AccountHolder secondaryOwner) {
+        this.id = id;
+        this.balance = balance;
+        this.primaryOwner = primaryOwner;
+        this.secondaryOwner = secondaryOwner;
+        this.penaltyFee = new BigDecimal(40);
     }
 
     public Long getId() {
@@ -51,12 +58,28 @@ public class Account {
         this.id = id;
     }
 
+    public Money getBalance() {
+        return balance;
+    }
+
+    public void setBalance(Money balance) {
+        this.balance = balance;
+    }
+
     public AccountHolder getPrimaryOwner() {
         return primaryOwner;
     }
 
     public void setPrimaryOwner(AccountHolder primaryOwner) {
         this.primaryOwner = primaryOwner;
+    }
+
+    public AccountHolder getSecondaryOwner() {
+        return secondaryOwner;
+    }
+
+    public void setSecondaryOwner(AccountHolder secondaryOwner) {
+        this.secondaryOwner = secondaryOwner;
     }
 
     public BigDecimal getPenaltyFee() {
@@ -67,19 +90,4 @@ public class Account {
         this.penaltyFee = penaltyFee;
     }
 
-    public List<Checking> getCheckingList() {
-        return checkingList;
-    }
-
-    public void setCheckingList(List<Checking> checkingList) {
-        this.checkingList = checkingList;
-    }
-
-    public List<CreditCard> getCreditCards() {
-        return creditCards;
-    }
-
-    public void setCreditCards(List<CreditCard> creditCards) {
-        this.creditCards = creditCards;
-    }
 }

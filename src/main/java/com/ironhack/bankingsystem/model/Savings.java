@@ -9,20 +9,15 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @Entity
-public class Savings {
-    @Id
-    private String savingsId;
-    private String secretKey;
-    private Money balance;
+@PrimaryKeyJoinColumn(name = "id")
+public class Savings extends Account{
+    private Integer secretKey;
     private BigDecimal minimumBalance;
     private Double interestRate;
     @Enumerated(value = EnumType.STRING)
     private Status status;
 
     private LocalDateTime ldt;
-
-    @ManyToOne
-    private Account account;
 
 
     public Savings() {
@@ -32,26 +27,24 @@ public class Savings {
         this.ldt = ts.toLocalDateTime();
     }
 
-    public Savings(String savingsId, Money balance, String secretKey, BigDecimal minimumBalance, Double interestRate,
-                   Status status) {
-        setBalance(balance);
-        setSavingsId(savingsId);
-        setSecretKey(secretKey);
-        setMinimumBalance(minimumBalance);
-        setInterestRate(interestRate);
-        setStatus(status);
+    public Savings(Long id, Money balance, AccountHolder primaryOwner) {
+        super(id, balance, primaryOwner);
+        this.secretKey = primaryOwner.getName().hashCode();
+        this.interestRate = 0.0025;
+        this.minimumBalance = new BigDecimal(1000);
+        this.status = Status.ACTIVE;
+        Timestamp ts = new Timestamp(System.currentTimeMillis());
+        this.ldt = ts.toLocalDateTime();
     }
 
-    public String getSavingsId() {
-        return savingsId;
-    }
-
-    public void setSavingsId(String savingsId) {
-        this.savingsId = savingsId;
-    }
-
-    public void setBalance(Money balance) {
-        this.balance = balance;
+    public Savings(Long id, Money balance, AccountHolder primaryOwner, AccountHolder secondaryOwner) {
+        super(id, balance, primaryOwner, secondaryOwner);
+        this.secretKey = primaryOwner.getName().hashCode();
+        this.interestRate = 0.0025;
+        this.minimumBalance = new BigDecimal(1000);
+        this.status = Status.ACTIVE;
+        Timestamp ts = new Timestamp(System.currentTimeMillis());
+        this.ldt = ts.toLocalDateTime();
     }
 
     public Double getInterestRate() {
@@ -59,7 +52,7 @@ public class Savings {
     }
 
     public void setInterestRate(Double interestRate) {
-        if (interestRate <= 0.5) {
+        if (interestRate <= 0.5 && interestRate >= 0.0025) {
             this.interestRate = interestRate;
         } else {
             this.interestRate = 0.0025;
@@ -67,11 +60,11 @@ public class Savings {
         }
     }
 
-    public String getSecretKey() {
+    public Integer getSecretKey() {
         return secretKey;
     }
 
-    public void setSecretKey(String secretKey) {
+    public void setSecretKey(Integer secretKey) {
         this.secretKey = secretKey;
     }
 
@@ -106,22 +99,24 @@ public class Savings {
         return ldt;
     }
 
-    public Money getBalance() {
+    public Money getSavingsBalance() {
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         LocalDateTime newLdt = ts.toLocalDateTime();
         if (newLdt.getYear() > getLdt().getYear()) {
             if (newLdt.getDayOfYear() >= getLdt().getDayOfYear()) {
-                balance
-                        .increaseAmount(balance
+                Money balance = new Money(super.getBalance()
+                        .increaseAmount(super.getBalance()
                                 .getAmount()
-                                .multiply(BigDecimal.valueOf(getInterestRate()))
+                                .multiply(BigDecimal.valueOf(getInterestRate()))),
+                        super.getBalance().getCurrency()
+
                 );
                 setBalance(balance);
                 setLdt(newLdt);
                 return balance;
             }
         }
-        return balance;
+        return super.getBalance();
     }
 
 

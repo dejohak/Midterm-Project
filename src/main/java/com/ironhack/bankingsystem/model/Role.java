@@ -9,7 +9,7 @@ public class Role {
     private Long id;
     private String name;
 
-    @ManyToOne
+    @OneToOne
     private User user;
 
     public Role() {

@@ -2,22 +2,19 @@ package com.ironhack.bankingsystem.model;
 
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
-public class Admin {
+@PrimaryKeyJoinColumn(name = "id")
+public class Admin extends User{
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
     private String name;
-
-    @OneToOne
-    private User user;
 
     public Admin() {
     }
 
-    public Admin(String name) {
+    public Admin(String username, String password, Role role, String name) {
+        super(username, password, role);
         this.name = name;
     }
 
@@ -29,11 +26,4 @@ public class Admin {
         this.name = name;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 }

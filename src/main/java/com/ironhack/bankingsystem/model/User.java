@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
+@Inheritance(strategy = InheritanceType.JOINED)
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -12,25 +13,16 @@ public class User {
     private String username;
     private String password;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private Set<Role> roles;
-
     @OneToOne(mappedBy = "user")
-    private Admin admin;
-
-    @OneToOne(mappedBy = "user")
-    private ThirdParty thirdParty;
-
-    @OneToOne(mappedBy = "user")
-    private AccountHolder accountHolder;
+    private Role role;
 
     public User() {
     }
 
-    public User(String username, String password, Set<Role> roles) {
+    public User(String username, String password, Role roles) {
         this.username = username;
         this.password = password;
-        this.roles = roles;
+        this.role = roles;
     }
 
     public Long getId() {
@@ -57,11 +49,11 @@ public class User {
         this.password = password;
     }
 
-    public Set<Role> getRoles() {
-        return roles;
+    public Role getRole() {
+        return role;
     }
 
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
+    public void setRole(Role role) {
+        this.role = role;
     }
 }

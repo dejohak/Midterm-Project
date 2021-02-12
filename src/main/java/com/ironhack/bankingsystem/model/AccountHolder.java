@@ -4,11 +4,11 @@ import com.ironhack.bankingsystem.classes.Address;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.Set;
 
 @Entity
-public class AccountHolder {
-    @Id
-    private String id;
+@PrimaryKeyJoinColumn(name = "id")
+public class AccountHolder extends User{
     private String name;
     private Date birthDate;
     @Embedded
@@ -21,39 +21,44 @@ public class AccountHolder {
     })
     private Address mailingAddress;
 
-    @OneToOne
+    @OneToOne(mappedBy = "primaryOwner")
     private Account account;
-
-    @OneToOne
-    private User user;
 
 
     public AccountHolder() {
     }
 
-    public AccountHolder(String id, String name, Date birthDate, Address primaryAddress, Account account) {
-        this.id = id;
+    public AccountHolder(String username, String password, Role role, String name, Date birthDate,
+                         Address primaryAddress) {
+        super(username, password, role);
+        this.name = name;
+        this.birthDate = birthDate;
+        this.primaryAddress = primaryAddress;
+    }
+
+    public AccountHolder(String name, Date birthDate, Address primaryAddress, Account account) {
         this.name = name;
         this.birthDate = birthDate;
         this.primaryAddress = primaryAddress;
         this.account = account;
     }
 
-    public AccountHolder(String id, String name, Date birthDate, Address primaryAddress, Address secondaryAddress, Account account) {
-        this.id = id;
+    public AccountHolder(String name, Date birthDate, Address primaryAddress, Address mailingAddress, Account account) {
         this.name = name;
         this.birthDate = birthDate;
         this.primaryAddress = primaryAddress;
-        this.mailingAddress = secondaryAddress;
+        this.mailingAddress = mailingAddress;
         this.account = account;
     }
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
+    public AccountHolder(String username, String password, Role role, String name, Date birthDate,
+                         Address primaryAddress, Address mailingAddress, Account account) {
+        super(username, password, role);
+        this.name = name;
+        this.birthDate = birthDate;
+        this.primaryAddress = primaryAddress;
+        this.mailingAddress = mailingAddress;
+        this.account = account;
     }
 
     public String getName() {

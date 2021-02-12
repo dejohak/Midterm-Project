@@ -6,48 +6,31 @@ import com.ironhack.bankingsystem.enums.Status;
 import javax.persistence.*;
 
 @Entity
-public class StudentChecking {
-    @Id
-    private Long studentCheckingId;
+@PrimaryKeyJoinColumn(name = "id")
+public class StudentChecking extends Account{
     private Integer secretKey;
-    private Money balance;
     @Enumerated(value = EnumType.STRING)
     private Status status;
-
-    @ManyToOne
-    private Account account;
 
     public StudentChecking() {
     }
 
-    public StudentChecking(Long studentCheckingId, Integer secretKey, Status status) {
-        this.studentCheckingId = studentCheckingId;
+    public StudentChecking(Integer secretKey, Status status) {
         this.secretKey = secretKey;
         this.status = status;
     }
 
-    public StudentChecking(Money balance, Long studentCheckingId, Integer secretKey, Status status) {
-        setStudentCheckingId(studentCheckingId);
-        setBalance(balance);
-        setSecretKey(secretKey);
-        setStatus(status);
+    public StudentChecking(Long id, Money balance, AccountHolder primaryOwner) {
+        super(id, balance, primaryOwner);
+        this.secretKey = primaryOwner.getName().hashCode();
+        this.status = Status.ACTIVE;
+    }
+    public StudentChecking(Long id, Money balance, AccountHolder primaryOwner, AccountHolder secondaryOwner) {
+        super(id, balance, primaryOwner, secondaryOwner);
+        this.secretKey = primaryOwner.getName().hashCode();
+        this.status = Status.ACTIVE;
     }
 
-    public Long getStudentCheckingId() {
-        return studentCheckingId;
-    }
-
-    public void setStudentCheckingId(Long studentCheckingId) {
-        this.studentCheckingId = studentCheckingId;
-    }
-
-    public Money getBalance() {
-        return balance;
-    }
-
-    public void setBalance(Money balance) {
-        this.balance = balance;
-    }
 
     public Integer getSecretKey() {
         return secretKey;

@@ -30,7 +30,7 @@ public class Data implements CommandLineRunner {
     public void sampleData() {
 
 
-        Account account = new Account(2343545232243345L, new BigDecimal(40));
+       /* Account account = new Account(2343545232243345L, new BigDecimal(40));
 
         AccountHolder accountHolder = new AccountHolder("478123456V", "Leo Messi",
                 new Date(87, 5, 25),
@@ -47,7 +47,7 @@ public class Data implements CommandLineRunner {
         accountRepository.save(account);
         accountHolderRepository.save(accountHolder);
         checkingRepository.save(checking);
-        creditCardRepository.save(creditCard);
+        creditCardRepository.save(creditCard);*/
     }
 
 
