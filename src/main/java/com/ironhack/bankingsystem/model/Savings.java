@@ -27,8 +27,8 @@ public class Savings extends Account{
         this.ldt = ts.toLocalDateTime();
     }
 
-    public Savings(Long id, Money balance, AccountHolder primaryOwner) {
-        super(id, balance, primaryOwner);
+    public Savings(Money balance, AccountHolder primaryOwner) {
+        super(balance, primaryOwner);
         this.secretKey = primaryOwner.getName().hashCode();
         this.interestRate = 0.0025;
         this.minimumBalance = new BigDecimal(1000);
@@ -37,8 +37,8 @@ public class Savings extends Account{
         this.ldt = ts.toLocalDateTime();
     }
 
-    public Savings(Long id, Money balance, AccountHolder primaryOwner, AccountHolder secondaryOwner) {
-        super(id, balance, primaryOwner, secondaryOwner);
+    public Savings(Money balance, AccountHolder primaryOwner, AccountHolder secondaryOwner) {
+        super(balance, primaryOwner, secondaryOwner);
         this.secretKey = primaryOwner.getName().hashCode();
         this.interestRate = 0.0025;
         this.minimumBalance = new BigDecimal(1000);
@@ -111,7 +111,7 @@ public class Savings extends Account{
                         super.getBalance().getCurrency()
 
                 );
-                setBalance(balance);
+                super.setBalance(balance);
                 setLdt(newLdt);
                 return balance;
             }

@@ -3,12 +3,14 @@ package com.ironhack.bankingsystem.model;
 import com.ironhack.bankingsystem.classes.Money;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class Account {
     @Id
+    @NotNull
     private Long id;
     @Embedded
     private Money balance;
@@ -33,17 +35,11 @@ public class Account {
         this.id = (long) (Math.random() * 10000000000000000L);
         this.balance = balance;
         this.primaryOwner = primaryOwner;
-    }
-
-    public Account(Long id, Money balance, AccountHolder primaryOwner) {
-        this.id = id;
-        this.balance = balance;
-        this.primaryOwner = primaryOwner;
         this.penaltyFee = new BigDecimal(40);
     }
 
-    public Account(Long id, Money balance, AccountHolder primaryOwner, AccountHolder secondaryOwner) {
-        this.id = id;
+    public Account(Money balance, AccountHolder primaryOwner, AccountHolder secondaryOwner) {
+        this.id = (long) (Math.random() * 10000000000000000L);
         this.balance = balance;
         this.primaryOwner = primaryOwner;
         this.secondaryOwner = secondaryOwner;

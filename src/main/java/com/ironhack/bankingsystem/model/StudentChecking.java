@@ -15,18 +15,13 @@ public class StudentChecking extends Account{
     public StudentChecking() {
     }
 
-    public StudentChecking(Integer secretKey, Status status) {
-        this.secretKey = secretKey;
-        this.status = status;
-    }
-
-    public StudentChecking(Long id, Money balance, AccountHolder primaryOwner) {
-        super(id, balance, primaryOwner);
+    public StudentChecking(Money balance, AccountHolder primaryOwner) {
+        super(balance, primaryOwner);
         this.secretKey = primaryOwner.getName().hashCode();
         this.status = Status.ACTIVE;
     }
-    public StudentChecking(Long id, Money balance, AccountHolder primaryOwner, AccountHolder secondaryOwner) {
-        super(id, balance, primaryOwner, secondaryOwner);
+    public StudentChecking(Money balance, AccountHolder primaryOwner, AccountHolder secondaryOwner) {
+        super(balance, primaryOwner, secondaryOwner);
         this.secretKey = primaryOwner.getName().hashCode();
         this.status = Status.ACTIVE;
     }

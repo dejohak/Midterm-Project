@@ -23,8 +23,8 @@ public class CreditCard extends Account{
         this.ldt = ts.toLocalDateTime();
     }
 
-    public CreditCard(Long id, Money balance, AccountHolder primaryOwner) {
-        super(id, balance, primaryOwner);
+    public CreditCard(Money balance, AccountHolder primaryOwner) {
+        super(balance, primaryOwner);
         this.creditLimit = new BigDecimal(100);
         this.interestRate = 0.2;
         Timestamp ts = new Timestamp(System.currentTimeMillis());
@@ -78,7 +78,7 @@ public class CreditCard extends Account{
                                     .getAmount()
                                     .multiply(BigDecimal.valueOf(getInterestRate()/12))),
                         super.getBalance().getCurrency());
-                setBalance(balance);
+                super.setBalance(balance);
                 setLdt(newLdt);
                 return balance;
             }

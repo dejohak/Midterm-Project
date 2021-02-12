@@ -3,23 +3,18 @@ package com.ironhack.bankingsystem.controller.dto;
 import com.ironhack.bankingsystem.classes.Money;
 import com.ironhack.bankingsystem.model.AccountHolder;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.PositiveOrZero;
+
 public class CheckingDTO {
-    private Long id;
+    @PositiveOrZero
     private Money balance;
+    @NotEmpty
     private AccountHolder accountHolder;
 
-    public CheckingDTO(Long id, Money balance, AccountHolder accountHolder) {
-        this.id = id;
+    public CheckingDTO(Money balance, AccountHolder accountHolder) {
         this.balance = balance;
         this.accountHolder = accountHolder;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public Money getBalance() {

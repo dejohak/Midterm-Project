@@ -39,8 +39,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.httpBasic();
         http.csrf().disable().authorizeRequests()
-                .mvcMatchers("").authenticated()
-                .mvcMatchers("").hasRole("ADMIN")
+                .mvcMatchers("/get/**").hasRole("USER")
+                .mvcMatchers("/get/**").hasRole("ADMIN")
                 .anyRequest().permitAll();
     }
 }

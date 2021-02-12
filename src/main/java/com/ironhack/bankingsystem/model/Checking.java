@@ -21,16 +21,16 @@ public class Checking extends Account{
         this.monthlyMaintenanceFee = new BigDecimal(12);
     }
 
-    public Checking(Long id, Money balance, AccountHolder primaryOwner) {
-        super(id, balance, primaryOwner);
+    public Checking(Money balance, AccountHolder primaryOwner) {
+        super(balance, primaryOwner);
         this.secretKey = primaryOwner.getName().hashCode();
         this.minimumBalance = new BigDecimal(250);
         this.monthlyMaintenanceFee = new BigDecimal(12);
         this.status = Status.ACTIVE;
     }
 
-    public Checking(Long id, Money balance, AccountHolder primaryOwner, AccountHolder secondaryOwner) {
-        super(id, balance, primaryOwner, secondaryOwner);
+    public Checking(Money balance, AccountHolder primaryOwner, AccountHolder secondaryOwner) {
+        super(balance, primaryOwner, secondaryOwner);
         this.secretKey = primaryOwner.getName().hashCode();
         this.minimumBalance = new BigDecimal(250);
         this.monthlyMaintenanceFee = new BigDecimal(12);
