@@ -29,7 +29,7 @@ public class Savings extends Account{
 
     public Savings(Money balance, AccountHolder primaryOwner) {
         super(balance, primaryOwner);
-        this.secretKey = primaryOwner.getName().hashCode();
+        this.secretKey = (int) (Math.random()*1000000);
         this.interestRate = 0.0025;
         this.minimumBalance = new BigDecimal(1000);
         this.status = Status.ACTIVE;
@@ -39,7 +39,7 @@ public class Savings extends Account{
 
     public Savings(Money balance, AccountHolder primaryOwner, AccountHolder secondaryOwner) {
         super(balance, primaryOwner, secondaryOwner);
-        this.secretKey = primaryOwner.getName().hashCode();
+        this.secretKey = (int) (Math.random()*1000000);;
         this.interestRate = 0.0025;
         this.minimumBalance = new BigDecimal(1000);
         this.status = Status.ACTIVE;

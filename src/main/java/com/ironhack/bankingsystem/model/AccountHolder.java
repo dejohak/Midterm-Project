@@ -4,7 +4,7 @@ import com.ironhack.bankingsystem.classes.Address;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.Set;
+import java.util.List;
 
 @Entity
 @PrimaryKeyJoinColumn(name = "id")
@@ -21,8 +21,8 @@ public class AccountHolder extends User{
     })
     private Address mailingAddress;
 
-    @OneToOne(mappedBy = "primaryOwner")
-    private Account account;
+    @OneToMany(mappedBy = "primaryOwner", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private List<Account> accounts;
 
 
     public AccountHolder() {
@@ -36,29 +36,29 @@ public class AccountHolder extends User{
         this.primaryAddress = primaryAddress;
     }
 
-    public AccountHolder(String name, Date birthDate, Address primaryAddress, Account account) {
+    public AccountHolder(String name, Date birthDate, Address primaryAddress, List<Account> accounts) {
         this.name = name;
         this.birthDate = birthDate;
         this.primaryAddress = primaryAddress;
-        this.account = account;
+        this.accounts = accounts;
     }
 
-    public AccountHolder(String name, Date birthDate, Address primaryAddress, Address mailingAddress, Account account) {
+    public AccountHolder(String name, Date birthDate, Address primaryAddress, Address mailingAddress, List<Account> accounts) {
         this.name = name;
         this.birthDate = birthDate;
         this.primaryAddress = primaryAddress;
         this.mailingAddress = mailingAddress;
-        this.account = account;
+        this.accounts = accounts;
     }
 
     public AccountHolder(String username, String password, Role role, String name, Date birthDate,
-                         Address primaryAddress, Address mailingAddress, Account account) {
+                         Address primaryAddress, Address mailingAddress, List<Account> accounts) {
         super(username, password, role);
         this.name = name;
         this.birthDate = birthDate;
         this.primaryAddress = primaryAddress;
         this.mailingAddress = mailingAddress;
-        this.account = account;
+        this.accounts = accounts;
     }
 
     public String getName() {
@@ -91,5 +91,9 @@ public class AccountHolder extends User{
 
     public void setMailingAddress(Address mailingAddress) {
         this.mailingAddress = mailingAddress;
+    }
+
+    public void setAccounts(List<Account> accounts) {
+        this.accounts = accounts;
     }
 }

@@ -17,12 +17,12 @@ public class StudentChecking extends Account{
 
     public StudentChecking(Money balance, AccountHolder primaryOwner) {
         super(balance, primaryOwner);
-        this.secretKey = primaryOwner.getName().hashCode();
+        this.secretKey = (int) (Math.random()*1000000);
         this.status = Status.ACTIVE;
     }
     public StudentChecking(Money balance, AccountHolder primaryOwner, AccountHolder secondaryOwner) {
         super(balance, primaryOwner, secondaryOwner);
-        this.secretKey = primaryOwner.getName().hashCode();
+        this.secretKey = (int) (Math.random()*1000000);
         this.status = Status.ACTIVE;
     }
 

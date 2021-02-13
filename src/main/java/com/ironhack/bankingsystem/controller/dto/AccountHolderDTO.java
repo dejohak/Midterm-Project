@@ -3,16 +3,27 @@ package com.ironhack.bankingsystem.controller.dto;
 import com.ironhack.bankingsystem.classes.Address;
 import com.ironhack.bankingsystem.model.Role;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Past;
 import java.util.Date;
-import java.util.Set;
 
 public class AccountHolderDTO {
+    @NotEmpty
     private String username;
+    @NotEmpty
     private String password;
+    @NotNull
     private Role role;
+    @NotEmpty
     private String name;
+    @Past
     private Date birthDate;
+    @NotNull
     private Address primaryAddress;
+
+    public AccountHolderDTO() {
+    }
 
     public AccountHolderDTO(String username, String password, Role role, String name, Date birthDate, Address primaryAddress) {
         this.username = username;

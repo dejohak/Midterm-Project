@@ -10,7 +10,9 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -50,7 +52,7 @@ public class Data implements CommandLineRunner {
                         "Dani Juan"
                 )
         );
-
+//      Trying different ways to persist the data.
         Optional<User> user = userRepository.findById(1L);
         role.setUser(user.get());
         roleRepository.save(role);
@@ -68,6 +70,14 @@ public class Data implements CommandLineRunner {
         role1.setUser(user.get());
         roleRepository.save(role1);
         roleRepository.save(new Role("USER", accountHolder1));
+
+//  =================== Accounts ===================
+        Checking checking = new Checking(new Money(new BigDecimal(873.45)), accountHolder);
+        List<Account> accountList = new ArrayList<>();
+        accountList.add(checking);
+        checkingRepository.save(checking);
+        accountHolder.setAccounts(accountList);
+        accountHolderRepository.save(accountHolder);
     }
 
 

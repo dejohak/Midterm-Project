@@ -23,7 +23,7 @@ public class Checking extends Account{
 
     public Checking(Money balance, AccountHolder primaryOwner) {
         super(balance, primaryOwner);
-        this.secretKey = primaryOwner.getName().hashCode();
+        this.secretKey = (int) (Math.random()*1000000);
         this.minimumBalance = new BigDecimal(250);
         this.monthlyMaintenanceFee = new BigDecimal(12);
         this.status = Status.ACTIVE;
@@ -31,7 +31,7 @@ public class Checking extends Account{
 
     public Checking(Money balance, AccountHolder primaryOwner, AccountHolder secondaryOwner) {
         super(balance, primaryOwner, secondaryOwner);
-        this.secretKey = primaryOwner.getName().hashCode();
+        this.secretKey = (int) (Math.random()*1000000);
         this.minimumBalance = new BigDecimal(250);
         this.monthlyMaintenanceFee = new BigDecimal(12);
         this.status = Status.ACTIVE;
@@ -69,8 +69,7 @@ public class Checking extends Account{
         this.secretKey = secretKey;
     }
 
-    @Override
-    public void setBalance(Money balance) {
+    public void setCheckingBalance(Money balance) {
         if (balance.getAmount().doubleValue() < minimumBalance.doubleValue()) {
             System.err.println("The balance for a checking account can not be less than the minimum balance: 250." +
                     "A penalty fee of 40 will be deducted from the current balance.");

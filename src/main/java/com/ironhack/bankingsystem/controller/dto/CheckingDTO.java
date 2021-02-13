@@ -12,6 +12,9 @@ public class CheckingDTO {
     @NotEmpty
     private AccountHolder accountHolder;
 
+    public CheckingDTO() {
+    }
+
     public CheckingDTO(Money balance, AccountHolder accountHolder) {
         this.balance = balance;
         this.accountHolder = accountHolder;

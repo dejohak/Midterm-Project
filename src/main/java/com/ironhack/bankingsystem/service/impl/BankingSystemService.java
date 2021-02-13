@@ -7,6 +7,8 @@ import com.ironhack.bankingsystem.model.*;
 import com.ironhack.bankingsystem.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -16,7 +18,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
-public class BakingSystemService {
+public class BankingSystemService {
     @Autowired
     private AccountHolderRepository accountHolderRepository;
     @Autowired
@@ -31,6 +33,8 @@ public class BakingSystemService {
     private SavingsRepository savingsRepository;
     @Autowired
     private RoleRepository roleRepository;
+    @Autowired
+    private ThirdPartyRepository thirdPartyRepository;
 
     public AccountHolder findAccountHolder(Long id) {
         Optional<AccountHolder> accountHolder = accountHolderRepository.findById(id);
@@ -83,6 +87,18 @@ public class BakingSystemService {
         }
     }
 
+    public ThirdParty createThirdParty(String name, String password) {
+        Role role = new Role("THIRD_PARTY");
+        roleRepository.save(role);
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        ThirdParty thirdParty = new ThirdParty(name.toLowerCase() + "_tp", passwordEncoder.encode(password),
+                role, name);
+        thirdPartyRepository.save(thirdParty);
+        role.setUser(thirdParty);
+        roleRepository.save(role);
+        return thirdParty;
+    }
+
     public Object validateAgeToCreateAccount(CheckingDTO checkingDTO) {
         Optional<AccountHolder> accountHolder = accountHolderRepository.findById(checkingDTO.getAccountHolder().getId());
         if (accountHolder.isPresent()) {
@@ -107,21 +123,21 @@ public class BakingSystemService {
                 // checking
                 return checkingRepository.save(new Checking(checkingDTO.getBalance(), checkingDTO.getAccountHolder()));
             }
-        } else throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account or Account holder not found.");
+        } else throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account holder not found.");
     }
 
     public void updateCheckingBalance(Long id, BigDecimal quantity) {
         Optional<Checking> checking = checkingRepository.findById(id);
         if (checking.isPresent()) {
+            Money balance;
             if (quantity.doubleValue() >= 0) {
-                Money balance = new Money(checking.get().getBalance().increaseAmount(quantity),
+                balance = new Money(checking.get().getBalance().increaseAmount(quantity),
                         checking.get().getBalance().getCurrency());
-                checking.get().setBalance(balance);
             } else {
-                Money balance = new Money(checking.get().getBalance().decreaseAmount(quantity),
+                balance = new Money(checking.get().getBalance().decreaseAmount(quantity),
                         checking.get().getBalance().getCurrency());
-                checking.get().setBalance(balance);
             }
+            checking.get().setCheckingBalance(balance);
             checkingRepository.save(checking.get());
         } else throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Checking account not found.");
     }
@@ -129,15 +145,15 @@ public class BakingSystemService {
     public void updateStudentCheckingBalance(Long id, BigDecimal quantity) {
         Optional<StudentChecking> studentChecking = studentCheckingRepository.findById(id);
         if (studentChecking.isPresent()) {
+            Money balance;
             if (quantity.doubleValue() >= 0) {
-                Money balance = new Money(studentChecking.get().getBalance().increaseAmount(quantity),
+                balance = new Money(studentChecking.get().getBalance().increaseAmount(quantity),
                         studentChecking.get().getBalance().getCurrency());
-                studentChecking.get().setBalance(balance);
             } else {
-                Money balance = new Money(studentChecking.get().getBalance().decreaseAmount(quantity),
+                balance = new Money(studentChecking.get().getBalance().decreaseAmount(quantity),
                         studentChecking.get().getBalance().getCurrency());
-                studentChecking.get().setBalance(balance);
             }
+            studentChecking.get().setBalance(balance);
             studentCheckingRepository.save(studentChecking.get());
         } else throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Student Checking account not found.");
     }
@@ -145,15 +161,15 @@ public class BakingSystemService {
     public void updateSavingsBalance(Long id, BigDecimal quantity) {
         Optional<Savings> savings = savingsRepository.findById(id);
         if (savings.isPresent()) {
+            Money balance;
             if (quantity.doubleValue() >= 0) {
-                Money balance = new Money(savings.get().getBalance().increaseAmount(quantity),
+                balance = new Money(savings.get().getBalance().increaseAmount(quantity),
                         savings.get().getBalance().getCurrency());
-                savings.get().setBalance(balance);
             } else {
-                Money balance = new Money(savings.get().getBalance().decreaseAmount(quantity),
+                balance = new Money(savings.get().getBalance().decreaseAmount(quantity),
                         savings.get().getBalance().getCurrency());
-                savings.get().setBalance(balance);
             }
+            savings.get().setBalance(balance);
             savingsRepository.save(savings.get());
         } else throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Savings account not found.");
     }
@@ -161,15 +177,15 @@ public class BakingSystemService {
     public void updateCreditCardBalance(Long id, BigDecimal quantity) {
         Optional<CreditCard> creditCard = creditCardRepository.findById(id);
         if (creditCard.isPresent()) {
+            Money balance;
             if (quantity.doubleValue() >= 0) {
-                Money balance = new Money(creditCard.get().getBalance().increaseAmount(quantity),
+                balance = new Money(creditCard.get().getBalance().increaseAmount(quantity),
                         creditCard.get().getBalance().getCurrency());
-                creditCard.get().setBalance(balance);
             } else {
-                Money balance = new Money(creditCard.get().getBalance().decreaseAmount(quantity),
+                balance = new Money(creditCard.get().getBalance().decreaseAmount(quantity),
                         creditCard.get().getBalance().getCurrency());
-                creditCard.get().setBalance(balance);
             }
+            creditCard.get().setBalance(balance);
             creditCardRepository.save(creditCard.get());
         } else throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Credit card not found.");
     }

@@ -7,16 +7,18 @@ import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 @Entity
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@Inheritance(strategy = InheritanceType.JOINED)
 public class Account {
     @Id
     @NotNull
     private Long id;
     @Embedded
     private Money balance;
-    @OneToOne
+    @ManyToOne
+    @JoinColumn(name = "primary_owner_id")
     private AccountHolder primaryOwner;
-    @OneToOne
+    @ManyToOne
+    @JoinColumn(name = "secondary_owner_id")
     @AttributeOverrides({
             @AttributeOverride(name = "id", column = @Column(name = "secondary_owner_id")),
             @AttributeOverride(name = "name", column = @Column(name = "secondary_owner_name")),
@@ -44,6 +46,11 @@ public class Account {
         this.primaryOwner = primaryOwner;
         this.secondaryOwner = secondaryOwner;
         this.penaltyFee = new BigDecimal(40);
+    }
+
+    public Account(Long id, AccountHolder primaryOwner) {
+        this.id = id;
+        this.primaryOwner = primaryOwner;
     }
 
     public Long getId() {
