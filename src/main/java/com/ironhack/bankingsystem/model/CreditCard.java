@@ -26,6 +26,7 @@ public class CreditCard extends Account{
     public CreditCard(Money balance, AccountHolder primaryOwner) {
         super(balance, primaryOwner);
         this.creditLimit = new BigDecimal(100);
+        setCreditCardBalance(balance);
         this.interestRate = 0.2;
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         this.ldt = ts.toLocalDateTime();
@@ -65,6 +66,14 @@ public class CreditCard extends Account{
             System.err.println("Interest rate may be less than 0.2 but no lower than 0.1. It will be set to its " +
                     "default value.");
             this.interestRate = 0.2;
+        }
+    }
+
+    public void setCreditCardBalance(Money balance) {
+        if (balance.getAmount().doubleValue() >= getCreditLimit().doubleValue()) {
+            super.setBalance(new Money(getCreditLimit(), balance.getCurrency()));
+        } else {
+            super.setBalance(balance);
         }
     }
 

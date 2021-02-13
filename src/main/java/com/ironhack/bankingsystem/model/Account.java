@@ -93,4 +93,14 @@ public class Account {
         this.penaltyFee = penaltyFee;
     }
 
+    @Override
+    public String toString() {
+        return "Account{" +
+                "id=" + id +
+                ", balance=" + balance +
+                ", primaryOwner=" + primaryOwner +
+                ", secondaryOwner=" + secondaryOwner +
+                ", penaltyFee=" + penaltyFee +
+                '}';
+    }
 }

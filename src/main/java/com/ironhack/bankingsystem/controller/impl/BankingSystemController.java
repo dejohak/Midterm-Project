@@ -3,9 +3,12 @@ package com.ironhack.bankingsystem.controller.impl;
 import com.ironhack.bankingsystem.classes.Money;
 import com.ironhack.bankingsystem.controller.dto.AccountHolderDTO;
 import com.ironhack.bankingsystem.controller.dto.CheckingDTO;
+import com.ironhack.bankingsystem.controller.dto.QuantityDTO;
 import com.ironhack.bankingsystem.controller.dto.ThirdPartyDTO;
 import com.ironhack.bankingsystem.controller.interfaces.IBankingSystemController;
+import com.ironhack.bankingsystem.model.Account;
 import com.ironhack.bankingsystem.model.AccountHolder;
+import com.ironhack.bankingsystem.model.Checking;
 import com.ironhack.bankingsystem.model.ThirdParty;
 import com.ironhack.bankingsystem.service.impl.BankingSystemService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.math.BigDecimal;
+import java.util.List;
 
 @RestController
 public class BankingSystemController implements IBankingSystemController {
@@ -21,11 +25,18 @@ public class BankingSystemController implements IBankingSystemController {
     @Autowired
     private BankingSystemService bankingSystemService;
 
+    @GetMapping("/get/accounts")
+    @ResponseStatus(HttpStatus.OK)
+    public List<Checking> getAccounts() {
+        return bankingSystemService.getAccounts();
+    }
+
     @GetMapping("/account-holder/{id}")
     @ResponseStatus(HttpStatus.OK)
     public AccountHolder getAccountHolder(@PathVariable Long id) {
         return bankingSystemService.findAccountHolder(id);
     }
+
 
     @PostMapping("/create/account-holder")
     @ResponseStatus(HttpStatus.CREATED)
@@ -41,22 +52,18 @@ public class BankingSystemController implements IBankingSystemController {
         return bankingSystemService.createThirdParty(thirdPartyDTO.getName(), thirdPartyDTO.getPassword());
     }
 
-    @PostMapping("/create/checking")
-    @ResponseStatus(HttpStatus.CREATED)
-    public Object createChecking(@RequestBody CheckingDTO checkingDTO) {
-        return bankingSystemService.validateAgeToCreateAccount(checkingDTO);
+
+    @GetMapping("/get/checking-balance/{secretKey}")
+    @ResponseStatus(HttpStatus.OK)
+    public Money getCheckingBalance(@PathVariable @Valid Integer secretKey) {
+        return bankingSystemService.getCheckingBalance(secretKey);
     }
 
-    @GetMapping("/get/checking-balance/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public Money getCheckingBalance(@PathVariable @Valid Long id) {
-        return bankingSystemService.getCheckingBalance(id);
-    }
 
-    @GetMapping("/get/student-checking-balance/{id}")
+    @GetMapping("/get/student-checking-balance/{secretKey}")
     @ResponseStatus(HttpStatus.OK)
-    public Money getStudentCheckingBalance(@PathVariable @Valid Long id) {
-        return bankingSystemService.getStudentCheckingBalance(id);
+    public Money getStudentCheckingBalance(@PathVariable @Valid Integer secretKey) {
+        return bankingSystemService.getStudentCheckingBalance(secretKey);
     }
 
     @GetMapping("/get/credit-card-balance/{id}")
@@ -65,57 +72,40 @@ public class BankingSystemController implements IBankingSystemController {
         return bankingSystemService.getCreditCardBalance(id);
     }
 
-    @GetMapping("/get/savings-balance/{id}")
+    @GetMapping("/get/savings-balance/{secretKey}")
     @ResponseStatus(HttpStatus.OK)
-    public Money getSavingsBalance(@PathVariable @Valid Long id) {
-        return bankingSystemService.getSavingsBalance(id);
+    public Money getSavingsBalance(@PathVariable @Valid Integer secretKey) {
+        return bankingSystemService.getSavingsBalance(secretKey);
     }
 
-    @PatchMapping("/credit/checking-balance/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void creditCheckingBalance(@PathVariable @Valid Long id, @RequestBody @Valid BigDecimal quantity) {
-        bankingSystemService.updateCheckingBalance(id, quantity);
+    @GetMapping("/show-accounts")
+    public List<Account> accounts() {
+        return bankingSystemService.showAccounts();
     }
 
-    @PatchMapping("/credit/student-checking-balance/{id}")
+    @PatchMapping("/transfer/{id}/{targetId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void creditStudentCheckingBalance(@PathVariable @Valid Long id, @RequestBody @Valid BigDecimal quantity) {
-        bankingSystemService.updateStudentCheckingBalance(id, quantity);
+    public void transferMoney(@PathVariable @Valid Long id, @PathVariable @Valid Long targetId,
+                              @RequestBody BigDecimal amount) {
+        bankingSystemService.transferMoney(id, targetId, amount);
     }
 
-    @PatchMapping("/credit/savings-balance/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void creditSavingsBalance(@PathVariable @Valid Long id, @RequestBody @Valid BigDecimal quantity) {
-        bankingSystemService.updateSavingsBalance(id, quantity);
+    @PostMapping("/create/checking")
+    @ResponseStatus(HttpStatus.CREATED)
+    public Object createChecking(@RequestBody CheckingDTO checkingDTO) {
+        return bankingSystemService.validateAgeToCreateAccount(checkingDTO);
     }
 
-    @PatchMapping("/credit/credit-card-balance/{id}")
+    @PatchMapping("/credit/account/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void creditCreditCardBalance(@PathVariable @Valid Long id, @RequestBody @Valid BigDecimal quantity) {
-        bankingSystemService.updateCreditCardBalance(id, quantity);
+    public void creditAccountBalance(@PathVariable @Valid Long id, @RequestBody @Valid QuantityDTO quantity) {
+        bankingSystemService.creditAccountBalance(id, quantity.getQuantity());
     }
 
-    @PatchMapping("/debit/checking-balance/{id}")
+    @PatchMapping("/debit/account/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void debitCheckingBalance(@PathVariable @Valid Long id, @RequestBody @Valid BigDecimal quantity) {
-        bankingSystemService.updateCheckingBalance(id, quantity);
+    public void debitAccountBalance(@PathVariable @Valid Long id, @RequestBody @Valid QuantityDTO quantity) {
+        bankingSystemService.debitAccountBalance(id, quantity.getQuantity());
     }
 
-    @PatchMapping("/debit/student-checking-balance/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void debitStudentCheckingBalance(@PathVariable @Valid Long id, @RequestBody @Valid BigDecimal quantity) {
-        bankingSystemService.updateStudentCheckingBalance(id, quantity);
-    }
-
-    @PatchMapping("/debit/savings-balance/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void debitSavingsBalance(@PathVariable @Valid Long id, @RequestBody @Valid BigDecimal quantity) {
-        bankingSystemService.updateSavingsBalance(id, quantity);
-    }
-
-    @PatchMapping("/debit/credit-card-balance/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void debitCreditCardBalance(@PathVariable @Valid Long id, @RequestBody @Valid BigDecimal quantity) {
-        bankingSystemService.updateCreditCardBalance(id, quantity);
-    }
 }
