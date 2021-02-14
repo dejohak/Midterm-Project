@@ -16,6 +16,8 @@ import java.util.List;
 
 public interface IBankingSystemController {
     public List<Checking> getAccounts();
+    public Object accessAccount(Integer secretKey);
+    public Object accessAccountAdmin(Long id);
     public AccountHolder getAccountHolder(Long id);
     public Money getCheckingBalance(Integer secretKey);
     public Money getStudentCheckingBalance(Integer secretKey);
@@ -28,14 +30,6 @@ public interface IBankingSystemController {
     public void creditAccountTP(Integer hashedKey, TransferThirdPartyDTO transferThirdPartyDTO);
     public void debitAccountTP(Integer hashedKey, TransferThirdPartyDTO transferThirdPartyDTO);
     public Object createChecking(CheckingDTO checkingDTO);
-    /*public AccountHolder createAccountHolder(AccountHolderDTO accountHolderDTO);
+    public AccountHolder createAccountHolder(AccountHolderDTO accountHolderDTO);
     public ThirdParty createThirdParty(ThirdPartyDTO thirdPartyDTO);
-    public void creditCheckingBalance(Long id, BigDecimal quantity);
-    public void creditStudentCheckingBalance(Long id, BigDecimal quantity);
-    public void creditSavingsBalance(Long id, BigDecimal quantity);
-    public void creditCreditCardBalance(Long id, BigDecimal quantity);
-    public void debitCheckingBalance(Long id, BigDecimal quantity);
-    public void debitStudentCheckingBalance(Long id, BigDecimal quantity);
-    public void debitSavingsBalance(Long id, BigDecimal quantity);
-    public void debitCreditCardBalance(Long id, BigDecimal quantity);*/
 }

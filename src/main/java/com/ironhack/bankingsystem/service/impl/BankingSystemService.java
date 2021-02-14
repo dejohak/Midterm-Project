@@ -222,6 +222,32 @@ public class BankingSystemService {
         }
     }
 
+    public Object findAccountType(Integer secretKey) {
+        Optional<Checking> checking = checkingRepository.findBySecretKey(secretKey);
+        Optional<StudentChecking> studentChecking = studentCheckingRepository.findBySecretKey(secretKey);
+        Optional<Savings> savings = savingsRepository.findBySecretKey(secretKey);
+        if (checking.isPresent()) {
+            return checking.get();
+        } else if (studentChecking.isPresent()) {
+            return studentChecking.get();
+        } else if (savings.isPresent()) {
+            return savings.get();
+        } else throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found");
+    }
+
+    public Object findAccountTypeId(Long id) {
+        Optional<Checking> checking = checkingRepository.findById(id);
+        Optional<StudentChecking> studentChecking = studentCheckingRepository.findById(id);
+        Optional<Savings> savings = savingsRepository.findById(id);
+        if (checking.isPresent()) {
+            return checking.get();
+        } else if (studentChecking.isPresent()) {
+            return studentChecking.get();
+        } else if (savings.isPresent()) {
+            return savings.get();
+        } else throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found");
+    }
+
     public void fraudDetector(Long id, BigDecimal amount) {
         Optional<Transactions> transactions = transactionsRepository.findById(id);
         Timestamp ts = new Timestamp(System.currentTimeMillis());
@@ -250,5 +276,13 @@ public class BankingSystemService {
             transaction.setTransactions(transactions1);
             transactionRepository.save(transaction);
         }
+    }
+
+    public Object accessAccount(Integer secretKey) {
+        return findAccountType(secretKey);
+    }
+
+    public Object accessAccountAdmin(Long id) {
+        return findAccountTypeId(id);
     }
 }

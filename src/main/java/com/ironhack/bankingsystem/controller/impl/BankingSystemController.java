@@ -27,6 +27,18 @@ public class BankingSystemController implements IBankingSystemController {
         return bankingSystemService.getAccounts();
     }
 
+    @GetMapping("/access-account/{secretKey}")
+    @ResponseStatus(HttpStatus.OK)
+    public Object accessAccount(@PathVariable Integer secretKey) {
+        return bankingSystemService.accessAccount(secretKey);
+    }
+
+    @GetMapping("/access-account/admin/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public Object accessAccountAdmin(@PathVariable Long id) {
+        return bankingSystemService.accessAccountAdmin(id);
+    }
+
     @GetMapping("/account-holder/{id}")
     @ResponseStatus(HttpStatus.OK)
     public AccountHolder getAccountHolder(@PathVariable Long id) {
