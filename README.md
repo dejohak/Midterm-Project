@@ -4,6 +4,8 @@
 
 ![ModelBS](src/main/resources/static/model/ModelBS.png)
 
+## Abstract
+
 This banking system has 4 types of accounts: Checking, Student Checking, Savings and Credit Card accounts. Student Checkings are practically the same as Checkings, but are automatically created when an account holder is younger than 24 years old. 
 
 There are 3 types of users: Account Holders, Admins and Third Parties. Account Holders can have as many accounts of any type as they want (with the restriction of the age in the St. Checking case), and can access these accounts as they please. They can also send and get money to and from any account just by typing the id of the target account. Admins can get any information from users or accounts, they can also debit and credit any account, and are the only ones with the authorisation
