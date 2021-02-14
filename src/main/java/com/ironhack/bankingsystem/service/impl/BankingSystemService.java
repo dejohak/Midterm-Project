@@ -45,8 +45,7 @@ public class BankingSystemService {
     }
 
     public List<Checking> getAccounts() {
-        List<Checking> checkings = checkingRepository.findAll();
-        return checkings;
+        return checkingRepository.findAll();
     }
 
     public Money getCheckingBalance(Integer secretKey) {
@@ -162,15 +161,37 @@ public class BankingSystemService {
             if (targetAccount.isPresent()) {
                 if(account.get().getBalance().getAmount().doubleValue() >= amount.doubleValue()) {
                     account.get().setBalance(new Money(account.get().getBalance().decreaseAmount(amount)));
+                    accountRepository.save(account.get());
                     targetAccount.get().setBalance(new Money(targetAccount.get().getBalance().increaseAmount(amount)));
+                    accountRepository.save(targetAccount.get());
                 } else throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Not enough funds");
             } else throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Target account not found.");
         } else throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found");
     }
 
     public List<Account> showAccounts() {
-        List<Account> accounts = accountRepository.findAll();
-        return accounts;
+        return accountRepository.findAll();
     }
 
+    public void creditAccountTP(BigDecimal amount, Long id) {
+        Optional<Account> account = accountRepository.findById(id);
+        if (account.isPresent()) {
+            Money balance;
+            balance = new Money(account.get().getBalance().increaseAmount(amount),
+                    account.get().getBalance().getCurrency());
+            account.get().setBalance(balance);
+            accountRepository.save(account.get());
+        } else throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found.");
+    }
+
+    public void debitAccountTP(BigDecimal amount, Long id) {
+        Optional<Account> account = accountRepository.findById(id);
+        if (account.isPresent()) {
+            Money balance;
+            balance = new Money(account.get().getBalance().decreaseAmount(amount),
+                    account.get().getBalance().getCurrency());
+            account.get().setBalance(balance);
+            accountRepository.save(account.get());
+        } else throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found.");
+    }
 }

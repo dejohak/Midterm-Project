@@ -1,10 +1,7 @@
 package com.ironhack.bankingsystem.controller.impl;
 
 import com.ironhack.bankingsystem.classes.Money;
-import com.ironhack.bankingsystem.controller.dto.AccountHolderDTO;
-import com.ironhack.bankingsystem.controller.dto.CheckingDTO;
-import com.ironhack.bankingsystem.controller.dto.QuantityDTO;
-import com.ironhack.bankingsystem.controller.dto.ThirdPartyDTO;
+import com.ironhack.bankingsystem.controller.dto.*;
 import com.ironhack.bankingsystem.controller.interfaces.IBankingSystemController;
 import com.ironhack.bankingsystem.model.Account;
 import com.ironhack.bankingsystem.model.AccountHolder;
@@ -86,8 +83,8 @@ public class BankingSystemController implements IBankingSystemController {
     @PatchMapping("/transfer/{id}/{targetId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void transferMoney(@PathVariable @Valid Long id, @PathVariable @Valid Long targetId,
-                              @RequestBody BigDecimal amount) {
-        bankingSystemService.transferMoney(id, targetId, amount);
+                              @RequestBody @Valid QuantityDTO quantityDTO) {
+        bankingSystemService.transferMoney(id, targetId, quantityDTO.getQuantity());
     }
 
     @PostMapping("/create/checking")
@@ -108,4 +105,13 @@ public class BankingSystemController implements IBankingSystemController {
         bankingSystemService.debitAccountBalance(id, quantity.getQuantity());
     }
 
+    @PatchMapping("/creditTP/account/{hashedKey}")
+    public void creditAccountTP(@PathVariable Integer hashedKey, @RequestBody @Valid TransferThirdPartyDTO transferThirdPartyDTO) {
+        bankingSystemService.creditAccountTP(transferThirdPartyDTO.getAmount(), transferThirdPartyDTO.getId());
+    }
+
+    @PatchMapping("/debitTP/account/{hashedKey}")
+    public void debitAccountTP(@PathVariable Integer hashedKey, @RequestBody @Valid TransferThirdPartyDTO transferThirdPartyDTO) {
+        bankingSystemService.debitAccountTP(transferThirdPartyDTO.getAmount(), transferThirdPartyDTO.getId());
+    }
 }

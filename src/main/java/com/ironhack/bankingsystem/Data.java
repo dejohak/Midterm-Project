@@ -111,7 +111,6 @@ public class Data implements CommandLineRunner {
         accountList.add(creditCard);
         creditCardRepository.save(creditCard);
 
-
     }
 
 
