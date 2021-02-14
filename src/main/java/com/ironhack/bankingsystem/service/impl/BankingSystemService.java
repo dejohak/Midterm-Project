@@ -1,8 +1,9 @@
 package com.ironhack.bankingsystem.service.impl;
 
 import com.ironhack.bankingsystem.classes.Money;
+import com.ironhack.bankingsystem.model.Transaction;
 import com.ironhack.bankingsystem.controller.dto.AccountHolderDTO;
-import com.ironhack.bankingsystem.controller.dto.CheckingDTO;
+import com.ironhack.bankingsystem.enums.Status;
 import com.ironhack.bankingsystem.model.*;
 import com.ironhack.bankingsystem.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,6 +38,10 @@ public class BankingSystemService {
     private RoleRepository roleRepository;
     @Autowired
     private ThirdPartyRepository thirdPartyRepository;
+    @Autowired
+    private TransactionsRepository transactionsRepository;
+    @Autowired
+    private TransactionRepository transactionRepository;
 
     public AccountHolder findAccountHolder(Long id) {
         Optional<AccountHolder> accountHolder = accountHolderRepository.findById(id);
@@ -139,6 +144,7 @@ public class BankingSystemService {
                         account.get().getBalance().getCurrency());
             account.get().setBalance(balance);
             accountRepository.save(account.get());
+            fraudDetector(id, quantity);
         } else throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found.");
     }
 
@@ -150,6 +156,7 @@ public class BankingSystemService {
                     account.get().getBalance().getCurrency());
             account.get().setBalance(balance);
             accountRepository.save(account.get());
+            fraudDetector(id, quantity);
         } else throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found.");
     }
 
@@ -164,6 +171,7 @@ public class BankingSystemService {
                     accountRepository.save(account.get());
                     targetAccount.get().setBalance(new Money(targetAccount.get().getBalance().increaseAmount(amount)));
                     accountRepository.save(targetAccount.get());
+                    fraudDetector(id, amount);
                 } else throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Not enough funds");
             } else throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Target account not found.");
         } else throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found");
@@ -182,6 +190,7 @@ public class BankingSystemService {
                     account.get().getBalance().getCurrency());
             account.get().setBalance(balance);
             accountRepository.save(account.get());
+            fraudDetector(id, amount);
         } else throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found.");
     }
 
@@ -193,6 +202,53 @@ public class BankingSystemService {
                     account.get().getBalance().getCurrency());
             account.get().setBalance(balance);
             accountRepository.save(account.get());
+            fraudDetector(id, amount);
         } else throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found.");
+    }
+
+    public void changeStatusByAccountType(Long id) {
+        Optional<Checking> checking = checkingRepository.findById(id);
+        Optional<StudentChecking> studentChecking = studentCheckingRepository.findById(id);
+        Optional<Savings> savings = savingsRepository.findById(id);
+        if (checking.isPresent()) {
+            checking.get().setStatus(Status.FROZEN);
+            checkingRepository.save(checking.get());
+        } else if (studentChecking.isPresent()) {
+            studentChecking.get().setStatus(Status.FROZEN);
+            studentCheckingRepository.save(studentChecking.get());
+        } else if (savings.isPresent()) {
+            savings.get().setStatus(Status.FROZEN);
+            savingsRepository.save(savings.get());
+        }
+    }
+
+    public void fraudDetector(Long id, BigDecimal amount) {
+        Optional<Transactions> transactions = transactionsRepository.findById(id);
+        Timestamp ts = new Timestamp(System.currentTimeMillis());
+        if (transactions.isPresent()) {
+            List<Transaction> transactionList = transactions.get().getTransactions();
+            Transaction transaction = new Transaction(amount, ts);
+            transaction.setTransactions(transactions.get());
+            transactionRepository.save(transaction);
+            transactionList.add(transaction);
+            transactions.get().setTransactions(transactionList);
+            transactionsRepository.save(transactions.get());
+            if (transactionList.size() > 1) {
+                if (transactionList.get(transactionList.size()-2).getTimestamp().getHours()-ts.getHours() == 0 &&
+                        transactionList.get(transactionList.size()-2).getTimestamp().getMinutes()-ts.getMinutes() == 0 &&
+                        transactionList.get(transactionList.size()-2).getTimestamp().getSeconds()-ts.getSeconds() >= -1) {
+                    changeStatusByAccountType(id);
+                }
+            }
+        } else {
+            List<Transaction> transactionList = new ArrayList<>();
+            Transaction transaction = new Transaction(amount, ts);
+            transactionList.add(transaction);
+            transactionRepository.save(transaction);
+            Transactions transactions1 = new Transactions(id, transactionList);
+            transactionsRepository.save(transactions1);
+            transaction.setTransactions(transactions1);
+            transactionRepository.save(transaction);
+        }
     }
 }
