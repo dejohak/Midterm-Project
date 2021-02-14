@@ -15,6 +15,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,7 +46,8 @@ public class BankingSystemService {
     }
 
     public List<Checking> getAccounts() {
-        return checkingRepository.findAll();
+        List<Checking> checkings = checkingRepository.findAll();
+        return checkings;
     }
 
     public Money getCheckingBalance(Integer secretKey) {
@@ -104,29 +106,27 @@ public class BankingSystemService {
         return thirdParty;
     }
 
-    public Object validateAgeToCreateAccount(CheckingDTO checkingDTO) {
-        Optional<AccountHolder> accountHolder = accountHolderRepository.findById(checkingDTO.getAccountHolder().getId());
+    public Object validateAgeToCreateAccount(BigDecimal quantity, Long id) {
+        Optional<AccountHolder> accountHolder = accountHolderRepository.findById(id);
         if (accountHolder.isPresent()) {
             Timestamp ts = new Timestamp(System.currentTimeMillis());
             LocalDateTime ldt = ts.toLocalDateTime();
             int checker = ldt.getYear() - accountHolder.get().getBirthDate().getYear() - 1900;
             if (checker < 24) {
                 // st checking
-                return studentCheckingRepository.save(new StudentChecking(checkingDTO.getBalance(),
-                        checkingDTO.getAccountHolder()));
+                return studentCheckingRepository.save(new StudentChecking(new Money(quantity), accountHolder.get()));
             } else if (checker == 24) {
                 if (ldt.getMonthValue() >= accountHolder.get().getBirthDate().getMonth()+1
                         && ldt.getDayOfMonth() >= accountHolder.get().getBirthDate().getDate()) {
                     // st checking
-                    return studentCheckingRepository.save(new StudentChecking(checkingDTO.getBalance(),
-                            checkingDTO.getAccountHolder()));
+                    return studentCheckingRepository.save(new StudentChecking(new Money(quantity), accountHolder.get()));
                 } else {
                     // checking
-                    return checkingRepository.save(new Checking(checkingDTO.getBalance(), checkingDTO.getAccountHolder()));
+                    return checkingRepository.save(new Checking(new Money(quantity), accountHolder.get()));
                 }
             } else {
                 // checking
-                return checkingRepository.save(new Checking(checkingDTO.getBalance(), checkingDTO.getAccountHolder()));
+                return checkingRepository.save(new Checking(new Money(quantity), accountHolder.get()));
             }
         } else throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account holder not found.");
     }
@@ -170,7 +170,8 @@ public class BankingSystemService {
     }
 
     public List<Account> showAccounts() {
-        return accountRepository.findAll();
+        List<Account> accounts = accountRepository.findAll();
+        return accounts;
     }
 
     public void creditAccountTP(BigDecimal amount, Long id) {

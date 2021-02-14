@@ -27,8 +27,8 @@ public interface IBankingSystemController {
     public void debitAccountBalance(Long id, QuantityDTO quantity);
     public void creditAccountTP(Integer hashedKey, TransferThirdPartyDTO transferThirdPartyDTO);
     public void debitAccountTP(Integer hashedKey, TransferThirdPartyDTO transferThirdPartyDTO);
-    /*public Object createChecking(CheckingDTO checkingDTO);
-    public AccountHolder createAccountHolder(AccountHolderDTO accountHolderDTO);
+    public Object createChecking(CheckingDTO checkingDTO);
+    /*public AccountHolder createAccountHolder(AccountHolderDTO accountHolderDTO);
     public ThirdParty createThirdParty(ThirdPartyDTO thirdPartyDTO);
     public void creditCheckingBalance(Long id, BigDecimal quantity);
     public void creditStudentCheckingBalance(Long id, BigDecimal quantity);

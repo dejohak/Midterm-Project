@@ -77,7 +77,8 @@ public class BankingSystemController implements IBankingSystemController {
 
     @GetMapping("/show-accounts")
     public List<Account> accounts() {
-        return bankingSystemService.showAccounts();
+        List<Account> accounts = bankingSystemService.showAccounts();
+        return accounts;
     }
 
     @PatchMapping("/transfer/{id}/{targetId}")
@@ -89,8 +90,8 @@ public class BankingSystemController implements IBankingSystemController {
 
     @PostMapping("/create/checking")
     @ResponseStatus(HttpStatus.CREATED)
-    public Object createChecking(@RequestBody CheckingDTO checkingDTO) {
-        return bankingSystemService.validateAgeToCreateAccount(checkingDTO);
+    public Object createChecking(@RequestBody @Valid CheckingDTO checkingDTO) {
+        return bankingSystemService.validateAgeToCreateAccount(checkingDTO.getQuantity(), checkingDTO.getId());
     }
 
     @PatchMapping("/credit/account/{id}")

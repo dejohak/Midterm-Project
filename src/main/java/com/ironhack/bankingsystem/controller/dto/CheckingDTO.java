@@ -1,38 +1,39 @@
 package com.ironhack.bankingsystem.controller.dto;
 
-import com.ironhack.bankingsystem.classes.Money;
-import com.ironhack.bankingsystem.model.AccountHolder;
 
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Past;
 import javax.validation.constraints.PositiveOrZero;
+import java.math.BigDecimal;
+import java.util.Date;
 
 public class CheckingDTO {
     @PositiveOrZero
-    private Money balance;
-    @NotEmpty
-    private AccountHolder accountHolder;
+    private BigDecimal quantity;
+    @NotNull
+    private Long id;
 
     public CheckingDTO() {
     }
 
-    public CheckingDTO(Money balance, AccountHolder accountHolder) {
-        this.balance = balance;
-        this.accountHolder = accountHolder;
+    public CheckingDTO(BigDecimal quantity, Long id) {
+        this.quantity = quantity;
+        this.id = id;
     }
 
-    public Money getBalance() {
-        return balance;
+    public BigDecimal getQuantity() {
+        return quantity;
     }
 
-    public void setBalance(Money balance) {
-        this.balance = balance;
+    public void setQuantity(BigDecimal quantity) {
+        this.quantity = quantity;
     }
 
-    public AccountHolder getAccountHolder() {
-        return accountHolder;
+    public Long getId() {
+        return id;
     }
 
-    public void setAccountHolder(AccountHolder accountHolder) {
-        this.accountHolder = accountHolder;
+    public void setId(Long id) {
+        this.id = id;
     }
 }

@@ -1,6 +1,7 @@
 package com.ironhack.bankingsystem.controller.dto;
 
 import javax.validation.constraints.Digits;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 public class QuantityDTO {
@@ -10,7 +11,7 @@ public class QuantityDTO {
     public QuantityDTO() {
     }
 
-    public QuantityDTO(@Digits(integer = 6, fraction = 2, message = "Quantity format not valid") BigDecimal quantity) {
+    public QuantityDTO(BigDecimal quantity) {
         this.quantity = quantity;
     }
 
@@ -21,4 +22,5 @@ public class QuantityDTO {
     public void setQuantity(BigDecimal quantity) {
         this.quantity = quantity;
     }
+
 }
