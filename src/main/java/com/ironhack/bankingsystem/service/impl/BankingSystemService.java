@@ -50,11 +50,6 @@ public class BankingSystemService {
         } else throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account Holder not found");
     }
 
-    public List<Checking> getAccounts() {
-        List<Checking> checkings = checkingRepository.findAll();
-        return checkings;
-    }
-
     public Money getCheckingBalance(Integer secretKey) {
         Optional<Checking> checking = checkingRepository.findBySecretKey(secretKey);
         if (checking.isPresent()) {
@@ -111,6 +106,8 @@ public class BankingSystemService {
         return thirdParty;
     }
 
+//  This is the method that is used to create a checking account or a student checking account depending on the age of
+//  the account holder.
     public Object validateAgeToCreateAccount(BigDecimal quantity, Long id) {
         Optional<AccountHolder> accountHolder = accountHolderRepository.findById(id);
         if (accountHolder.isPresent()) {
@@ -239,12 +236,15 @@ public class BankingSystemService {
         Optional<Checking> checking = checkingRepository.findById(id);
         Optional<StudentChecking> studentChecking = studentCheckingRepository.findById(id);
         Optional<Savings> savings = savingsRepository.findById(id);
+        Optional<CreditCard> creditCard = creditCardRepository.findById(id);
         if (checking.isPresent()) {
             return checking.get();
         } else if (studentChecking.isPresent()) {
             return studentChecking.get();
         } else if (savings.isPresent()) {
             return savings.get();
+        } else if (creditCard.isPresent()) {
+            return creditCard.get();
         } else throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found");
     }
 

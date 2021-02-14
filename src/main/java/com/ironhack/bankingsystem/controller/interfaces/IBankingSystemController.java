@@ -15,7 +15,6 @@ import java.util.List;
 
 
 public interface IBankingSystemController {
-    public List<Checking> getAccounts();
     public Object accessAccount(Integer secretKey);
     public Object accessAccountAdmin(Long id);
     public AccountHolder getAccountHolder(Long id);
