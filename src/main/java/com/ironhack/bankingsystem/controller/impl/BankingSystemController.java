@@ -55,30 +55,18 @@ public class BankingSystemController implements IBankingSystemController {
         return bankingSystemService.createThirdParty(thirdPartyDTO.getName(), thirdPartyDTO.getPassword());
     }
 
-
-    @GetMapping("/get/checking-balance/{secretKey}")
+//  Getter of the balance of any account using secret keys
+    @GetMapping("/get/account-balance/{secretKey}")
     @ResponseStatus(HttpStatus.OK)
-    public Money getCheckingBalance(@PathVariable @Valid Integer secretKey) {
-        return bankingSystemService.getCheckingBalance(secretKey);
+    public Money getAccountBalance(@PathVariable Integer secretKey) {
+        return bankingSystemService.getAccountBalance(secretKey);
     }
 
-//  Methods to get the balance of an specified account
-    @GetMapping("/get/student-checking-balance/{secretKey}")
-    @ResponseStatus(HttpStatus.OK)
-    public Money getStudentCheckingBalance(@PathVariable @Valid Integer secretKey) {
-        return bankingSystemService.getStudentCheckingBalance(secretKey);
-    }
-
+//  Gets credit card balance using the id
     @GetMapping("/get/credit-card-balance/{id}")
     @ResponseStatus(HttpStatus.OK)
     public Money getCreditCardBalance(@PathVariable @Valid Long id) {
         return bankingSystemService.getCreditCardBalance(id);
-    }
-
-    @GetMapping("/get/savings-balance/{secretKey}")
-    @ResponseStatus(HttpStatus.OK)
-    public Money getSavingsBalance(@PathVariable @Valid Integer secretKey) {
-        return bankingSystemService.getSavingsBalance(secretKey);
     }
 
 //  Admins can see all the accounts in the DB with this method.
@@ -119,11 +107,13 @@ public class BankingSystemController implements IBankingSystemController {
 //  Third parties can debit or credit an account with the following two methods. They have to provide their hashed key
 //  in the request.
     @PatchMapping("/creditTP/account/{hashedKey}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void creditAccountTP(@PathVariable Integer hashedKey, @RequestBody @Valid TransferThirdPartyDTO transferThirdPartyDTO) {
         bankingSystemService.creditAccountTP(transferThirdPartyDTO.getAmount(), transferThirdPartyDTO.getId());
     }
 
     @PatchMapping("/debitTP/account/{hashedKey}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void debitAccountTP(@PathVariable Integer hashedKey, @RequestBody @Valid TransferThirdPartyDTO transferThirdPartyDTO) {
         bankingSystemService.debitAccountTP(transferThirdPartyDTO.getAmount(), transferThirdPartyDTO.getId());
     }

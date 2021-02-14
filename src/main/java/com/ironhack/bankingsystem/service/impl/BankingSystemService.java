@@ -50,19 +50,10 @@ public class BankingSystemService {
         } else throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account Holder not found");
     }
 
-    public Money getCheckingBalance(Integer secretKey) {
-        Optional<Checking> checking = checkingRepository.findBySecretKey(secretKey);
-        if (checking.isPresent()) {
-            return checking.get().getBalance();
-        } else throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Checking account not found.");
+    public Money getAccountBalance(Integer secretKey) {
+        return findAccountBalance(secretKey);
     }
 
-    public Money getStudentCheckingBalance(Integer secretKey) {
-        Optional<StudentChecking> stChecking = studentCheckingRepository.findBySecretKey(secretKey);
-        if (stChecking.isPresent()) {
-            return stChecking.get().getBalance();
-        } else throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Student Checking account not found.");
-    }
 
     public Money getCreditCardBalance(Long id) {
         Optional<CreditCard> creditCard = creditCardRepository.findById(id);
@@ -71,12 +62,6 @@ public class BankingSystemService {
         } else throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Credit card not found.");
     }
 
-    public Money getSavingsBalance(Integer secretKey) {
-        Optional<Savings> savings = savingsRepository.findBySecretKey(secretKey);
-        if(savings.isPresent()) {
-            return savings.get().getSavingsBalance();
-        } else throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Savings account not found.");
-    }
 
     public AccountHolder createAccountHolder(AccountHolderDTO accountHolderDTO) {
         if (!accountHolderDTO.getRole().getName().equals("USER")) {
@@ -232,6 +217,19 @@ public class BankingSystemService {
         } else throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found");
     }
 
+    public Money findAccountBalance(Integer secretKey) {
+        Optional<Checking> checking = checkingRepository.findBySecretKey(secretKey);
+        Optional<StudentChecking> studentChecking = studentCheckingRepository.findBySecretKey(secretKey);
+        Optional<Savings> savings = savingsRepository.findBySecretKey(secretKey);
+        if (checking.isPresent()) {
+            return checking.get().getBalance();
+        } else if (studentChecking.isPresent()) {
+            return studentChecking.get().getBalance();
+        } else if (savings.isPresent()) {
+            return savings.get().getSavingsBalance();
+        } else throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found");
+    }
+
     public Object findAccountTypeId(Long id) {
         Optional<Checking> checking = checkingRepository.findById(id);
         Optional<StudentChecking> studentChecking = studentCheckingRepository.findById(id);
@@ -285,4 +283,6 @@ public class BankingSystemService {
     public Object accessAccountAdmin(Long id) {
         return findAccountTypeId(id);
     }
+
+
 }
